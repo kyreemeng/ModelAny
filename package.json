@@ -1,0 +1,26 @@
+{
+  "name": "modelany",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test e2e --reporter=line",
+    "test:watch": "vitest",
+    "verify": "npm run check && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/chrome": "^0.2.2",
+    "@types/node": "^26.1.1",
+    "@types/pngjs": "^6.0.5",
+    "esbuild": "^0.28.1",
+    "jsdom": "^29.1.1",
+    "pngjs": "^7.0.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  }
+}
