@@ -115,7 +115,8 @@ describe("accessible static UI", () => {
     expect(options.match(/<section/g)?.length).toBeGreaterThanOrEqual(5);
     expect(css).toContain("prefers-reduced-motion");
     expect(css).toContain("overflow-x: hidden");
-    expect(css).toContain("linear-gradient(135deg, #f5fbff");
+    expect(css).toContain("linear-gradient(180deg, #f5fbff");
+    expect(css).not.toMatch(/\.console-shell\s*\{[^}]*border-radius/);
     expect(popup).not.toMatch(/on(click|input|change)=/);
     expect(popup).not.toContain("confirm-dialog");
     expect(options).not.toContain("setting-confirm");
