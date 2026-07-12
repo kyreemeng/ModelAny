@@ -1,49 +1,142 @@
-# ModelAny
+<div align="center">
+  <img src="src/assets/modelany-icon-master.png" alt="ModelAny" width="180">
+  <h1>ModelAny</h1>
+  <p><strong>Send one prompt to every AI.</strong><br>一条提示词，发给所有 AI。</p>
+  <p>
+    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
+    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
+    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
+  </p>
+</div>
 
-ModelAny 是一个 Manifest V3 Chrome 扩展，可将同一段纯文本问题派发到多个 AI 模型。
+> 不必在多个 AI 标签页之间来回复制。<br>
+> 输入一次，选择模型，一键同时打开 ChatGPT、Gemini、DeepSeek 等 AI 对话。
 
-## 开发与构建
+用同一个问题，快速获得不同模型的思路、答案与视角。<br>
+更快对比，更好决策。
+
+**One prompt. Multiple models. Better answers.**<br>
+**一次提问，多模型回答，找到更好的答案。**
+
+适合写作、编程、研究、创意、学习，以及所有需要多角度 AI 回答的时刻。
+
+> **ModelAny — Ask once. Think wider.**<br>
+> **ModelAny —— 问一次，看得更广。**
+
+## 为什么使用 ModelAny？
+
+| | |
+|---|---|
+| ⚡ **一次输入** | 不再重复复制同一条问题 |
+| 🧠 **多模型视角** | 同时比较不同 AI 的思路与答案 |
+| 🎯 **一键调度** | 选择模型后，自动打开对应对话页面 |
+| 🚀 **自动发送** | 可选自动填充并发送，也可以手动确认 |
+| 🗂️ **标签分组** | 将本轮 AI 对话页面归为同一组 |
+| 🔒 **本地优先** | 草稿、设置、历史和任务状态保存在浏览器本地 |
+
+## 支持的 AI 模型
+
+- 智谱 GLM
+- Kimi
+- ChatGPT
+- Gemini
+- DeepSeek
+- 通义千问
+- 豆包
+- 文心
+
+模型网站的页面结构可能变化。ModelAny 使用语义选择器识别输入框和发送控件，并提供诊断功能帮助定位页面适配问题。
+
+## 使用方式
+
+1. 在 Chrome 中登录你想使用的 AI 模型网站。
+2. 点击浏览器工具栏中的 ModelAny 图标。
+3. 输入一条问题，最多支持 5000 个 Unicode 字符。
+4. 选择一个或多个模型。
+5. 按需开启“自动发送”，点击发送或按 `Cmd/Ctrl + Enter`。
+6. ModelAny 会为选中的模型打开独立对话页面，并填入同一条问题。
+
+也可以在网页中选中文字，右键选择 **“使用 ModelAny 提问”**，直接将选中文本带入扩展。
+
+## 安装
+
+ModelAny 当前通过 Chrome 的“加载已解压的扩展程序”使用。
+
+### 1. 获取项目
+
+```bash
+git clone https://github.com/kyreemeng/PromptVolley.git
+cd PromptVolley
+```
+
+### 2. 安装依赖并构建
 
 需要 Node.js 22 或更高版本。
 
 ```bash
 npm install
-npm run check
-npm test
 npm run build
-npm run test:e2e
 ```
 
-端到端测试默认使用本机 Hermes Chromium；其他环境可通过
+### 3. 加载扩展
+
+1. 打开 Chrome 的 `chrome://extensions`。
+2. 开启右上角的 **开发者模式**。
+3. 点击 **加载已解压的扩展程序**。
+4. 选择项目中的 `dist` 目录。
+5. 点击浏览器工具栏中的 ModelAny 图标开始使用。
+
+修改代码后重新运行 `npm run build`，再回到 `chrome://extensions` 点击扩展的“重新加载”。
+
+## 隐私与安全
+
+- 问题只发送到你主动选择的模型网站。
+- 不上传问题、历史记录或诊断日志到 ModelAny 服务器。
+- 草稿、设置、历史、任务状态和日志只保存在 `chrome.storage.local`。
+- 不加载远程代码，不使用 `eval`。
+- Host permissions 仅限支持的 AI 官方域名。
+- 不尝试绕过验证码、登录验证、风控或平台安全机制。
+
+## 开发
+
+```bash
+npm install
+npm run check       # TypeScript 类型检查
+npm test            # 单元测试
+npm run build       # 构建 dist
+npm run test:e2e    # Chromium 扩展端到端测试
+```
+
+端到端测试默认使用本机 Chromium。其他环境可通过
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` 指定 Chromium 可执行文件。
 
-在 Chrome 打开 `chrome://extensions`，启用“开发者模式”，选择“加载已解压的扩展程序”，加载本项目的 `dist` 目录。使用前请分别登录需要启用的模型网站。
+项目结构：
 
-## 使用
-
-1. 点击扩展图标，输入不超过 5000 个 Unicode 字符的问题。
-2. 选择模型编队，按需启用自动提交。
-3. 点击发射或按 Cmd/Ctrl+Enter。
-4. 可在弹窗查看最近 20 条历史，在设置页管理选项并运行诊断。
-5. 也可以选中网页文字后使用“使用 ModelAny 提问”右键菜单。
-
-关闭弹窗不会取消后台任务。任务进度、草稿、设置和日志保存在 `chrome.storage.local`。
-
-## 权限说明
-
-- `storage`：保存草稿、设置、历史、任务状态和脱敏日志。
-- `tabs`、`tabGroups`：打开八个模型页面并按轮次分组。
-- `contextMenus`：提供选中文字入口。
-- `alarms`：唤醒 Service Worker 恢复或清理任务。
-- Host permissions 仅限八个受支持模型的官方域名。
-
-扩展不加载远程代码，不使用 `eval`，不会上传提问或日志。
+```text
+src/
+├── background/     Service Worker、任务调度、标签页通信
+├── content/        各模型页面的输入与发送适配器
+├── options/        设置页与诊断
+├── popup/          浏览器弹窗主界面
+└── shared/         模型配置、存储、类型与校验
+```
 
 ## 排错
 
-- “需要登录”：打开对应标签页完成登录后重试。
-- “未找到输入框/发送按钮”：目标网站 DOM 可能已改版；在设置页运行诊断，保留标签页检查实际页面结构，再更新 `src/shared/models.ts` 中该模型的语义选择器。
-- 自动提交失败时，已安全填入的文本会保留，可手动提交。
-- 页面超时：确认网络可用并重新派发。
+- **需要登录**：在对应模型页面完成登录后，重新发送。
+- **未找到输入框**：确认页面已加载完成，并在设置页运行诊断。
+- **自动发送失败**：关闭自动发送后重试，或在模型页面手动点击发送。
+- **页面超时**：确认网络可用，再重新发送。
+- **页面结构变化**：在设置页保留诊断标签页，并更新 `src/shared/models.ts` 中对应模型的选择器。
 
-网页自动化受各平台页面变化和限制影响。请勿尝试绕过验证码、风控或平台安全机制。
+## 反馈与贡献
+
+如果你发现问题或有改进建议，欢迎提交 GitHub Issue 或 Pull Request。
+
+反馈邮箱：**kyreemeng@gmail.com**
+
+欢迎贡献新的模型适配器、页面选择器和测试用例。
+
+## License
+
+本项目目前未指定开源许可证。若你希望在 GitHub 上公开授权使用，请补充合适的 `LICENSE` 文件。
