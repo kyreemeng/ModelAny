@@ -3,9 +3,9 @@
   <h1>ModelAny</h1>
   <p><strong>Send one prompt to every AI.</strong><br>一条提示词，发给所有 AI。</p>
   <p>
-    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
-    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
-    <a href="https://github.com/kyreemeng/PromptVolley"><img src="https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
+    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
+    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
+    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
   </p>
 </div>
 
@@ -65,8 +65,8 @@ ModelAny 当前通过 Chrome 的“加载已解压的扩展程序”使用。
 ### 1. 获取项目
 
 ```bash
-git clone https://github.com/kyreemeng/PromptVolley.git
-cd PromptVolley
+git clone https://github.com/kyreemeng/modelany.git
+cd modelany
 ```
 
 ### 2. 安装依赖并构建
