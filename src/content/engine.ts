@@ -115,11 +115,9 @@ export const fillContentEditable = (element: HTMLElement, value: string): void =
 
 const replaceContentEditable = (element: HTMLElement, value: string): void => {
   element.focus();
-  dispatchBeforeInput(element, value);
   element.replaceChildren(element.ownerDocument.createTextNode(value));
   element.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true, inputType: "insertText", data: value }));
   element.dispatchEvent(new Event("change", { bubbles: true }));
-  dispatchTypingSignal(element, value);
 };
 
 const dispatchEnter = (input: HTMLElement): void => {
@@ -139,6 +137,12 @@ const promptRemains = (input: HTMLElement, prompt: string): boolean => {
   return value.trim() === prompt.trim();
 };
 
+const fillPrompt = (adapter: ModelAdapter, input: HTMLElement, prompt: string): void => {
+  if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) setNativeValue(input, prompt);
+  else if (adapter.id === "kimi") replaceContentEditable(input, prompt);
+  else fillContentEditable(input, prompt);
+};
+
 const clickSubmitControl = (control: HTMLElement): void => {
   control.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, cancelable: true }));
   control.dispatchEvent(new MouseEvent("mousedown", { bubbles: true, cancelable: true }));
@@ -146,29 +150,43 @@ const clickSubmitControl = (control: HTMLElement): void => {
   control.click();
 };
 
-const usableSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
+const visibleSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
   if (!(element instanceof HTMLElement) || !visible(element)) return false;
-  if (element instanceof HTMLButtonElement && element.disabled) return false;
-  if (element.getAttribute("aria-disabled") === "true") return false;
   if (element.matches("[data-testid*='stop'], [aria-label*='停止'], [aria-label*='Stop']")) return false;
   return adapter.id !== "deepseek" || !element.querySelector("svg rect");
 };
 
-export const findSubmitButton = (adapter: ModelAdapter, root: Document): HTMLElement | null => {
+const usableSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
+  if (!visibleSubmitControl(adapter, element)) return false;
+  if (element instanceof HTMLButtonElement && element.disabled) return false;
+  return element.getAttribute("aria-disabled") !== "true";
+};
+
+const findSubmitControl = (
+  adapter: ModelAdapter,
+  root: Document,
+  predicate: (adapter: ModelAdapter, element: Element) => element is HTMLElement
+): HTMLElement | null => {
   for (const selector of adapter.submitSelectors) {
     for (const control of root.querySelectorAll(selector)) {
-      if (usableSubmitControl(adapter, control)) return control;
+      if (predicate(adapter, control)) return control;
     }
   }
   return null;
 };
 
+export const findSubmitButton = (adapter: ModelAdapter, root: Document): HTMLElement | null => {
+  return findSubmitControl(adapter, root, usableSubmitControl);
+};
+
 const waitForSubmitButton = async (
-  adapter: ModelAdapter, dependencies: EngineDependencies
+  adapter: ModelAdapter,
+  dependencies: EngineDependencies,
+  predicate = usableSubmitControl
 ): Promise<HTMLElement | null> => {
   const deadline = dependencies.now() + Math.min(dependencies.timeoutMs ?? 5_000, 5_000);
   while (dependencies.now() <= deadline) {
-    const button = findSubmitButton(adapter, dependencies.document);
+    const button = findSubmitControl(adapter, dependencies.document, predicate);
     if (button) return button;
     await dependencies.sleep(500);
   }
@@ -191,12 +209,13 @@ export const executeFillCommand = async (
   if (adapter.readyDelayMs > 0) await dependencies.sleep(adapter.readyDelayMs);
   const input = await waitForEditable(adapter, dependencies);
   if (!input) return { status: "INPUT_NOT_FOUND" };
-  const diagnosticButton = findSubmitButton(adapter, dependencies.document);
-  if (command.type === "DIAGNOSE") return { status: diagnosticButton ? "FILLED" : "SUBMIT_NOT_FOUND" };
+  if (command.type === "DIAGNOSE") {
+    fillPrompt(adapter, input, "ModelAny");
+    const diagnosticButton = await waitForSubmitButton(adapter, dependencies, visibleSubmitControl);
+    return { status: diagnosticButton ? "FILLED" : "SUBMIT_NOT_FOUND" };
+  }
   if (!isValidFillMessage(command)) return { status: "UNEXPECTED_ERROR", detail: "INVALID_MESSAGE" };
-  if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) setNativeValue(input, command.prompt);
-  else if (adapter.id === "kimi") replaceContentEditable(input, command.prompt);
-  else fillContentEditable(input, command.prompt);
+  fillPrompt(adapter, input, command.prompt);
   if (!command.autoSubmit) return { status: "FILLED" };
   const button = await waitForSubmitButton(adapter, dependencies);
   if (button) {

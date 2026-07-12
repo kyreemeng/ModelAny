@@ -202,6 +202,10 @@ describe("content engine", () => {
     document.body.innerHTML = `<div role="textbox" contenteditable="true">旧文本</div>`;
     const input = document.querySelector<HTMLElement>("[contenteditable]")!;
     const execCommand = vi.fn(() => true);
+    const beforeInput = vi.fn();
+    const keydown = vi.fn();
+    input.addEventListener("beforeinput", beforeInput);
+    input.addEventListener("keydown", keydown);
     Object.defineProperty(document, "execCommand", { configurable: true, value: execCommand });
 
     const result = await executeFillCommand(
@@ -213,6 +217,8 @@ describe("content engine", () => {
     expect(result.status).toBe("FILLED");
     expect(input.textContent).toBe("测试");
     expect(execCommand).not.toHaveBeenCalled();
+    expect(beforeInput).not.toHaveBeenCalled();
+    expect(keydown).not.toHaveBeenCalled();
   });
 
   it("falls back to Enter when clicking does not consume the filled prompt", async () => {
@@ -272,6 +278,42 @@ describe("content engine", () => {
     expect((await executeFillCommand(adapter, { type: "DIAGNOSE", modelId: "doubao" }, { ...instant, document, hostname: "localhost" })).status).toBe("NOT_LOGGED_IN");
     document.body.innerHTML = "";
     expect((await executeFillCommand(adapter, { type: "DIAGNOSE", modelId: "doubao" }, { ...instant, document, hostname: "localhost", timeoutMs: 500 })).status).toBe("INPUT_NOT_FOUND");
+  });
+
+  it("fills ModelAny before diagnosing a send button that starts disabled", async () => {
+    document.body.innerHTML = `<textarea data-testid="prompt"></textarea><button type="submit" disabled>发送</button>`;
+    const input = document.querySelector<HTMLTextAreaElement>("textarea")!;
+    const button = document.querySelector<HTMLButtonElement>("button")!;
+    input.addEventListener("input", () => { button.disabled = input.value !== "ModelAny"; });
+
+    const result = await executeFillCommand(
+      adapter,
+      { type: "DIAGNOSE", modelId: "doubao" },
+      { ...instant, document, hostname: "localhost" }
+    );
+
+    expect(input.value).toBe("ModelAny");
+    expect(result.status).toBe("FILLED");
+  });
+
+  it.each([
+    ["qwen", `<textarea class="message-input-textarea"></textarea><button data-testid="chat-send-button" aria-disabled="true">发送</button>`],
+    ["deepseek", `<textarea id="chat-input"></textarea><div role="button" class="ds-icon-button" aria-disabled="true"><svg><path></path></svg></div>`],
+    ["kimi", `<div role="textbox" contenteditable="true"></div><button aria-label="Submit" disabled>发送</button>`],
+    ["glm", `<textarea slot="reference"></textarea><button aria-label="发送" disabled>发送</button>`],
+    ["wenxin", `<div role="textbox" contenteditable="true"></div><button aria-label="发送" aria-disabled="true">发送</button>`],
+    ["chatgpt", `<div id="prompt-textarea" contenteditable="true"></div><button data-testid="send-button" disabled>发送</button>`]
+  ] as const)("diagnoses %s by finding its visible send control even while disabled", async (modelId, markup) => {
+    const model = { ...getModelById(modelId), hostname: "localhost", readyDelayMs: 0 };
+    document.body.innerHTML = markup;
+
+    const result = await executeFillCommand(
+      model,
+      { type: "DIAGNOSE", modelId },
+      { ...instant, document, hostname: "localhost", timeoutMs: 500 }
+    );
+
+    expect(result.status).toBe("FILLED");
   });
 
   it("ignores hidden login controls on an authenticated chat page", async () => {

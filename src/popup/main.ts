@@ -227,7 +227,7 @@ chrome.runtime.onMessage.addListener((message: { type?: string; task?: SendTask 
     const statuses = task.modelIds.map((id) => task.results[id]?.status ?? "UNEXPECTED_ERROR");
     const summary = summarizeTask(statuses);
     const failures = task.modelIds.filter((id) => !["SUBMITTED", "FILLED"].includes(task.results[id]?.status ?? ""));
-    showToast(summary === "success" ? "齐射完成，可查看各模型结果" : failures.map((id) => `${MODELS.find((m) => m.id === id)?.name}：${ERROR_MESSAGES[task.results[id]?.status ?? "UNEXPECTED_ERROR"]}`).join("；"), summary !== "success");
+    showToast(summary === "success" ? "批量发送完成🎉，请查看各模型结果" : failures.map((id) => `${MODELS.find((m) => m.id === id)?.name}：${ERROR_MESSAGES[task.results[id]?.status ?? "UNEXPECTED_ERROR"]}`).join("；"), summary !== "success");
   }
 });
 window.addEventListener("pagehide", () => { window.clearTimeout(saveTimer); void storage.saveDraft(prompt.value); });
