@@ -15,7 +15,6 @@ describe("manifest", () => {
       "storage",
       "tabs",
       "tabGroups",
-      "scripting",
       "contextMenus",
       "alarms"
     ]);

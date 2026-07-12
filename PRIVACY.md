@@ -1,11 +1,24 @@
-# ModelAny 隐私说明
+# ModelAny Privacy Policy
 
-ModelAny 仅在用户明确操作时处理输入内容。
+Last updated: July 12, 2026
 
-- 提问、草稿、模型选择、设置、历史、任务状态和诊断日志只保存在本机 Chrome 扩展存储中。
-- 提问仅发送到用户选择并已打开的模型网页，不发送到 ModelAny 或其他第三方服务器。
-- 诊断日志不保存完整提问；导出内容只包括扩展版本、导出时间、浏览器信息、设置摘要和最多 50 条脱敏执行结果。
-- 扩展不出售数据、不投放广告、不进行分析追踪、不加载远程代码。
-- 用户可在设置页清空历史或重置全部本地数据，也可以在 Chrome 中移除扩展来删除扩展存储。
+ModelAny is a browser extension that sends a prompt to AI websites selected by the user. It processes data only when the user explicitly interacts with the extension.
 
-模型网站会依据其各自的隐私政策处理用户在页面中提交的内容。ModelAny 不控制这些网站的数据处理方式。
+## Data handled
+
+- Prompts, drafts, model selections, settings, history, task status, and diagnostic results are stored locally in the browser's extension storage.
+- ModelAny does not collect, sell, advertise with, or analyze personal data.
+- ModelAny does not send prompts or diagnostic logs to a ModelAny server.
+- ModelAny does not use remote code, tracking scripts, or third-party analytics.
+
+## Data shared with AI websites
+
+When the user selects a model and sends a prompt, ModelAny opens the selected AI website and fills or submits the prompt there. The selected website receives the prompt directly and processes it under its own privacy policy. ModelAny does not control how those websites handle submitted content.
+
+## User controls
+
+Users can clear history or reset local data from the Settings page. Removing the extension from the browser also removes its local extension storage.
+
+## Contact
+
+For privacy questions or support, contact **kyreemeng@gmail.com**.
