@@ -1,5 +1,4 @@
-import { ERROR_MESSAGES } from "../shared/errors";
-import { getModelById, MODEL_IDS } from "../shared/models";
+import { MODEL_IDS } from "../shared/models";
 import type { HistoryItem, ModelId, ModelResultCode, ModelSelection, SendTask } from "../shared/types";
 
 export interface PopupState {
@@ -51,27 +50,6 @@ export const summarizeTask = (statuses: ModelResultCode[]): "success" | "partial
   if (successes === statuses.length && statuses.length > 0) return "success";
   if (successes > 0) return "partial";
   return "failure";
-};
-
-export const resultPresentation = (task: SendTask) => {
-  const firstSuccess = task.modelIds
-    .map((id) => task.results[id])
-    .find((result) => result?.tabId !== undefined && successCodes.includes(result.status));
-  const failures = task.modelIds.flatMap((modelId) => {
-    const result = task.results[modelId];
-    if (!result || successCodes.includes(result.status)) return [];
-    const model = getModelById(modelId);
-    return [{
-      modelId,
-      modelName: model.name,
-      status: result.status,
-      message: ERROR_MESSAGES[result.status],
-      tabId: result.tabId,
-      url: model.url,
-      canOpenLogin: result.status === "NOT_LOGGED_IN"
-    }];
-  });
-  return { firstSuccessTabId: firstSuccess?.tabId, failures };
 };
 
 export const clearActionAttention = async (dependencies: {

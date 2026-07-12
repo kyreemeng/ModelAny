@@ -1,4 +1,4 @@
-export type ModelId = "doubao" | "qwen" | "deepseek" | "kimi" | "glm" | "wenxin" | "chatgpt";
+export type ModelId = "doubao" | "qwen" | "deepseek" | "kimi" | "glm" | "wenxin" | "chatgpt" | "gemini";
 
 export interface Settings {
   autoSubmit: boolean;

@@ -16,7 +16,7 @@ describe("Unicode prompt validation", () => {
 
 describe("model adapters", () => {
   it("keeps the approved provider order and complete adapter metadata", () => {
-    expect(MODEL_IDS).toEqual(["doubao", "qwen", "deepseek", "kimi", "glm", "wenxin", "chatgpt"]);
+    expect(MODEL_IDS).toEqual(["glm", "kimi", "chatgpt", "gemini", "deepseek", "qwen", "doubao", "wenxin"]);
     for (const model of MODELS) {
       expect(model.url).toMatch(/^https:\/\//);
       expect(model.color).toMatch(/^#[0-9A-F]{6}$/i);
@@ -63,5 +63,15 @@ describe("model adapters", () => {
       iconPath: "icons/models/chatgpt.svg"
     });
     expect(getModelById("qwen").submitSelectors).toContain("button[data-testid*='send']");
+  });
+
+  it("includes Gemini at gemini.google.com with chat controls", () => {
+    expect(getModelById("gemini")).toMatchObject({
+      url: "https://gemini.google.com/",
+      hostname: "gemini.google.com",
+      iconPath: "icons/models/gemini.svg"
+    });
+    expect(getModelById("gemini").inputSelectors).toContain("[contenteditable='true']");
+    expect(getModelById("gemini").submitSelectors).toContain("button[aria-label*='Send']");
   });
 });

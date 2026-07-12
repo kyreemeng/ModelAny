@@ -21,14 +21,14 @@ describe("manifest", () => {
     ]);
   });
 
-  it("limits host access to the seven supported providers", async () => {
+  it("limits host access to the eight supported providers", async () => {
     const manifest = JSON.parse(await readFile("manifest.json", "utf8")) as {
       host_permissions: string[];
       content_scripts: Array<{ matches: string[]; js: string[] }>;
     };
 
-    expect(manifest.host_permissions).toHaveLength(11);
-    expect(manifest.content_scripts).toHaveLength(7);
+    expect(manifest.host_permissions).toHaveLength(12);
+    expect(manifest.content_scripts).toHaveLength(8);
     expect(manifest.host_permissions).not.toContain("<all_urls>");
     expect(manifest.host_permissions).toContain("https://www.qianwen.com/*");
     expect(manifest.host_permissions).toContain("https://www.kimi.com/*");
@@ -42,5 +42,8 @@ describe("manifest", () => {
       .toEqual(["https://wenxin.baidu.com/*", "https://chat.baidu.com/*", "https://yiyan.baidu.com/*"]);
     expect(manifest.content_scripts.find(({ js }) => js.includes("content-chatgpt.js"))?.matches)
       .toEqual(["https://chatgpt.com/*", "https://www.chatgpt.com/*", "https://chat.openai.com/*"]);
+    expect(manifest.host_permissions).toContain("https://gemini.google.com/*");
+    expect(manifest.content_scripts.find(({ js }) => js.includes("content-gemini.js"))?.matches)
+      .toEqual(["https://gemini.google.com/*"]);
   });
 });

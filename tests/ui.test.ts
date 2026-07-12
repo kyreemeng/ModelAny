@@ -2,10 +2,9 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 import {
   clearActionAttention, createPopupState, deriveSendLabel, formatHistoryTime,
-  progressFromTask, restoreHistoryItem, resultPresentation, selectionRecord,
+  progressFromTask, restoreHistoryItem, selectionRecord,
   startSendError, summarizeTask
 } from "../src/popup/view";
-import { createDiagnosticExport } from "../src/shared/export";
 import type { HistoryItem, SendTask } from "../src/shared/types";
 
 describe("popup state and rendering helpers", () => {
@@ -31,7 +30,8 @@ describe("popup state and rendering helpers", () => {
       kimi: true,
       glm: false,
       wenxin: false,
-      chatgpt: false
+      chatgpt: false,
+      gemini: false
     });
   });
 
@@ -61,25 +61,6 @@ describe("popup state and rendering helpers", () => {
     });
   });
 
-  it("builds per-model failures and selects the first successful result tab", () => {
-    const task: SendTask = {
-      id: "t", prompt: "p", promptSummary: "p", modelIds: ["doubao", "qwen", "glm"],
-      autoSubmit: true, groupTabs: false, recordLogs: true, startedAt: 1, deadline: 2,
-      status: "completed", results: {
-        doubao: { modelId: "doubao", status: "NOT_LOGGED_IN", tabId: 3, startedAt: 1 },
-        qwen: { modelId: "qwen", status: "SUBMITTED", tabId: 4, startedAt: 1 },
-        glm: { modelId: "glm", status: "INPUT_NOT_FOUND", tabId: 5, startedAt: 1 }
-      }
-    };
-    expect(resultPresentation(task)).toEqual({
-      firstSuccessTabId: 4,
-      failures: [
-        expect.objectContaining({ modelId: "doubao", canOpenLogin: true, tabId: 3 }),
-        expect.objectContaining({ modelId: "glm", canOpenLogin: false, tabId: 5 })
-      ]
-    });
-  });
-
   it("clears context-menu badge and title when popup opens", async () => {
     const calls: string[] = [];
     await clearActionAttention({
@@ -87,18 +68,6 @@ describe("popup state and rendering helpers", () => {
       setTitle: async (title) => { calls.push(`title:${title}`); }
     });
     expect(calls).toEqual(["badge:", "title:ModelAny"]);
-  });
-});
-
-describe("diagnostic export", () => {
-  it("excludes drafts and history text", () => {
-    const exported = createDiagnosticExport({
-      version: "1.0.0", exportedAt: "2026-01-01", browser: "Chrome",
-      settings: { autoSubmit: true, groupTabs: true, confirmManyTabs: true, localMetrics: true },
-      logs: [{ id: "l", taskId: "t", modelId: "glm", startedAt: 1, durationMs: 2, result: "SUBMITTED" }]
-    });
-    expect(JSON.stringify(exported)).not.toContain("draft");
-    expect(Object.keys(exported)).toEqual(["version", "exportedAt", "browser", "settings", "logs"]);
   });
 });
 
@@ -110,7 +79,6 @@ describe("accessible static UI", () => {
     expect(popup).toContain("<label");
     expect(popup).toContain('aria-live="polite"');
     expect(options).toContain("<dialog");
-    expect(popup).toContain('id="result-details"');
     expect(options).toContain("<main");
     expect(options.match(/<section/g)?.length).toBeGreaterThanOrEqual(5);
     expect(css).toContain("prefers-reduced-motion");

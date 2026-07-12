@@ -24,7 +24,7 @@ npm run test:e2e
 1. 点击扩展图标，输入不超过 5000 个 Unicode 字符的问题。
 2. 选择模型编队，按需启用自动提交。
 3. 点击发射或按 Cmd/Ctrl+Enter。
-4. 可在弹窗查看最近 20 条历史，在设置页管理选项、运行诊断并导出最近 50 条脱敏日志。
+4. 可在弹窗查看最近 20 条历史，在设置页管理选项并运行诊断。
 5. 也可以选中网页文字后使用“使用 ModelAny 提问”右键菜单。
 
 关闭弹窗不会取消后台任务。任务进度、草稿、设置和日志保存在 `chrome.storage.local`。
@@ -32,10 +32,10 @@ npm run test:e2e
 ## 权限说明
 
 - `storage`：保存草稿、设置、历史、任务状态和脱敏日志。
-- `tabs`、`tabGroups`：打开五个模型页面并按轮次分组。
+- `tabs`、`tabGroups`：打开八个模型页面并按轮次分组。
 - `contextMenus`：提供选中文字入口。
 - `alarms`：唤醒 Service Worker 恢复或清理任务。
-- Host permissions 仅限五个受支持模型的官方域名。
+- Host permissions 仅限八个受支持模型的官方域名。
 
 扩展不加载远程代码，不使用 `eval`，不会上传提问或日志。
 

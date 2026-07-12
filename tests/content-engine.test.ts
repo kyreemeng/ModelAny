@@ -177,6 +177,28 @@ describe("content engine", () => {
     expect(click).toHaveBeenCalledOnce();
   });
 
+  it("fills and submits Gemini when an authenticated account marker is present", async () => {
+    const gemini = { ...getModelById("gemini"), hostname: "localhost", readyDelayMs: 0 };
+    document.body.innerHTML = `
+      <header data-authuser="0"></header>
+      <rich-textarea><div contenteditable="true"></div></rich-textarea>
+      <button aria-label="Send message">发送</button>
+    `;
+    const input = document.querySelector<HTMLElement>("[contenteditable]")!;
+    const button = document.querySelector<HTMLButtonElement>("button")!;
+    const click = vi.spyOn(button, "click");
+    button.addEventListener("click", () => { input.textContent = ""; });
+
+    const result = await executeFillCommand(
+      gemini,
+      { type: "FILL_PROMPT", modelId: "gemini", prompt: "Gemini 自动发送", autoSubmit: true },
+      { ...instant, document, hostname: "localhost" }
+    );
+
+    expect(click).toHaveBeenCalledOnce();
+    expect(result.status).toBe("SUBMITTED");
+  });
+
   it("prefers Qianwen's data-testid send button over a legacy class match", async () => {
     const qwen = { ...getModelById("qwen"), hostname: "localhost", readyDelayMs: 0 };
     document.body.innerHTML = `
@@ -280,11 +302,9 @@ describe("content engine", () => {
     expect((await executeFillCommand(adapter, { type: "DIAGNOSE", modelId: "doubao" }, { ...instant, document, hostname: "localhost", timeoutMs: 500 })).status).toBe("INPUT_NOT_FOUND");
   });
 
-  it("fills ModelAny before diagnosing a send button that starts disabled", async () => {
-    document.body.innerHTML = `<textarea data-testid="prompt"></textarea><button type="submit" disabled>发送</button>`;
+  it("diagnoses by filling ModelAny and reports FILLED without needing a send button", async () => {
+    document.body.innerHTML = `<textarea data-testid="prompt"></textarea>`;
     const input = document.querySelector<HTMLTextAreaElement>("textarea")!;
-    const button = document.querySelector<HTMLButtonElement>("button")!;
-    input.addEventListener("input", () => { button.disabled = input.value !== "ModelAny"; });
 
     const result = await executeFillCommand(
       adapter,
@@ -296,14 +316,29 @@ describe("content engine", () => {
     expect(result.status).toBe("FILLED");
   });
 
+  it("diagnoses without clicking any send control", async () => {
+    document.body.innerHTML = `<textarea data-testid="prompt"></textarea><button type="submit">发送</button>`;
+    const click = vi.spyOn(document.querySelector<HTMLButtonElement>("button")!, "click");
+
+    const result = await executeFillCommand(
+      adapter,
+      { type: "DIAGNOSE", modelId: "doubao" },
+      { ...instant, document, hostname: "localhost" }
+    );
+
+    expect(result.status).toBe("FILLED");
+    expect(click).not.toHaveBeenCalled();
+  });
+
   it.each([
-    ["qwen", `<textarea class="message-input-textarea"></textarea><button data-testid="chat-send-button" aria-disabled="true">发送</button>`],
-    ["deepseek", `<textarea id="chat-input"></textarea><div role="button" class="ds-icon-button" aria-disabled="true"><svg><path></path></svg></div>`],
-    ["kimi", `<div role="textbox" contenteditable="true"></div><button aria-label="Submit" disabled>发送</button>`],
-    ["glm", `<textarea slot="reference"></textarea><button aria-label="发送" disabled>发送</button>`],
-    ["wenxin", `<div role="textbox" contenteditable="true"></div><button aria-label="发送" aria-disabled="true">发送</button>`],
-    ["chatgpt", `<div id="prompt-textarea" contenteditable="true"></div><button data-testid="send-button" disabled>发送</button>`]
-  ] as const)("diagnoses %s by finding its visible send control even while disabled", async (modelId, markup) => {
+    ["glm", `<textarea slot="reference"></textarea>`],
+    ["kimi", `<div role="textbox" contenteditable="true"></div>`],
+    ["chatgpt", `<div id="prompt-textarea" contenteditable="true"></div>`],
+    ["gemini", `<div contenteditable="true"></div>`],
+    ["deepseek", `<textarea id="chat-input"></textarea>`],
+    ["qwen", `<textarea class="message-input-textarea"></textarea>`],
+    ["wenxin", `<div role="textbox" contenteditable="true"></div>`]
+  ] as const)("diagnoses %s as FILLED once ModelAny is entered, with no send button present", async (modelId, markup) => {
     const model = { ...getModelById(modelId), hostname: "localhost", readyDelayMs: 0 };
     document.body.innerHTML = markup;
 

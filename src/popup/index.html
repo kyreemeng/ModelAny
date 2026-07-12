@@ -9,7 +9,7 @@
 <body>
   <main class="console-shell">
     <header class="brand-bar">
-      <div><span class="brand-mark" aria-hidden="true">M</span><div><h1>ModelAny</h1><p>一键调度多个模型</p></div></div>
+      <div><img class="brand-mark" src="icons/icon48.png" alt=""><div><h1>ModelAny</h1><p>一次提问，多模型回答，找到更好的答案</p></div></div>
       <button id="open-options" class="icon-button" type="button" aria-label="打开设置">⚙</button>
     </header>
     <div id="toast" class="toast" aria-live="polite" hidden></div>
@@ -29,10 +29,6 @@
       <button id="history-toggle" type="button" class="history-button" aria-controls="history" aria-expanded="false">最近记录 <span id="history-count">0</span></button>
     </section>
     <button id="send" class="send-button" type="button" disabled>请输入问题</button>
-    <section id="result-details" class="result-details panel" aria-labelledby="result-title" hidden>
-      <div class="section-heading"><h2 id="result-title">本轮结果</h2><button id="view-result" type="button" class="text-button" hidden>查看结果</button></div>
-      <ul id="failure-list"></ul>
-    </section>
     <p class="shortcut">⌘ / Ctrl + Enter 发送</p>
     <footer>v1.0.1 · 内容仅保存在本机</footer>
     <aside id="history" class="history-drawer" aria-labelledby="history-title" hidden>

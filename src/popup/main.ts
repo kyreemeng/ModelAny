@@ -5,7 +5,7 @@ import type { AppState, HistoryItem, ModelId, SendTask } from "../shared/types";
 import { countCodePoints, limitCodePoints, normalizePrompt } from "../shared/validation";
 import {
   clearActionAttention, createPopupState, deriveSendLabel, formatHistoryTime,
-  progressFromTask, restoreHistoryItem, resultPresentation, selectionRecord,
+  progressFromTask, restoreHistoryItem, selectionRecord,
   startSendError, summarizeTask
 } from "./view";
 
@@ -22,13 +22,9 @@ const autoSubmit = required<HTMLInputElement>("#auto-submit");
 const toast = required<HTMLDivElement>("#toast");
 const historyDrawer = required<HTMLElement>("#history");
 const historyList = required<HTMLOListElement>("#history-list");
-const resultDetails = required<HTMLElement>("#result-details");
-const failureList = required<HTMLUListElement>("#failure-list");
-const viewResult = required<HTMLButtonElement>("#view-result");
 let appState: AppState;
 let state = createPopupState();
 let saveTimer: number | undefined;
-let firstSuccessTabId: number | undefined;
 
 const showToast = (message: string, alert = false) => {
   toast.textContent = message;
@@ -74,30 +70,6 @@ const applySelection = (selected: readonly ModelId[]) => {
   void storage.saveModelSelection(appState.modelEnabled);
   renderModels();
   renderButton();
-};
-const renderResults = (task: SendTask) => {
-  const presentation = resultPresentation(task);
-  firstSuccessTabId = presentation.firstSuccessTabId;
-  viewResult.hidden = firstSuccessTabId === undefined;
-  failureList.replaceChildren();
-  for (const failure of presentation.failures) {
-    const item = document.createElement("li");
-    const text = document.createElement("span");
-    text.textContent = `${failure.modelName}：${failure.message}`;
-    item.append(text);
-    if (failure.canOpenLogin) {
-      const open = document.createElement("button");
-      open.type = "button";
-      open.textContent = "打开登录页面";
-      open.addEventListener("click", () => {
-        if (failure.tabId !== undefined) void chrome.tabs.update(failure.tabId, { active: true });
-        else void chrome.tabs.create({ url: failure.url, active: true });
-      });
-      item.append(open);
-    }
-    failureList.append(item);
-  }
-  resultDetails.hidden = presentation.failures.length === 0 && firstSuccessTabId === undefined;
 };
 const renderHistory = () => {
   historyList.replaceChildren();
@@ -191,8 +163,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderHistory();
   const active = appState.tasks.find(({ status }) => status !== "completed");
   if (active) { state = { ...state, ...progressFromTask(active) }; renderButton(); }
-  const latestCompleted = appState.tasks.find(({ status }) => status === "completed");
-  if (latestCompleted) renderResults(latestCompleted);
 });
 prompt.addEventListener("input", updatePrompt);
 prompt.addEventListener("paste", (event) => {
@@ -212,9 +182,6 @@ required("#history-toggle").addEventListener("click", () => { historyDrawer.hidd
 required("#history-close").addEventListener("click", () => { historyDrawer.hidden = true; });
 required("#clear-history").addEventListener("click", async () => { await storage.clearHistory(); appState.history = []; renderHistory(); });
 required("#open-options").addEventListener("click", () => { void chrome.runtime.openOptionsPage(); });
-viewResult.addEventListener("click", () => {
-  if (firstSuccessTabId !== undefined) void chrome.tabs.update(firstSuccessTabId, { active: true });
-});
 chrome.runtime.onMessage.addListener((message: { type?: string; task?: SendTask }) => {
   if (message.type !== "TASK_PROGRESS" || !message.task) return;
   const task = message.task;
@@ -223,7 +190,6 @@ chrome.runtime.onMessage.addListener((message: { type?: string; task?: SendTask 
   state.sending = task.status !== "completed";
   renderButton();
   if (task.status === "completed") {
-    renderResults(task);
     const statuses = task.modelIds.map((id) => task.results[id]?.status ?? "UNEXPECTED_ERROR");
     const summary = summarizeTask(statuses);
     const failures = task.modelIds.filter((id) => !["SUBMITTED", "FILLED"].includes(task.results[id]?.status ?? ""));

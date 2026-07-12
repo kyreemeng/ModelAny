@@ -1,5 +1,4 @@
 import { MODELS } from "../shared/models";
-import { createDiagnosticExport } from "../shared/export";
 import { storage } from "../shared/storage";
 import type { AppState, Settings } from "../shared/types";
 
@@ -69,19 +68,6 @@ required("#reset-all").addEventListener("click", () => confirmDanger("重置草�
 required("#danger-cancel").addEventListener("click", () => { dangerAction = undefined; dialog.close(); });
 required("#danger-confirm").addEventListener("click", async () => {
   const action = dangerAction; dangerAction = undefined; dialog.close(); await action?.();
-});
-required("#export-logs").addEventListener("click", async () => {
-  const current = await storage.getAppState();
-  const payload = createDiagnosticExport({
-    version: chrome.runtime.getManifest().version, exportedAt: new Date().toISOString(),
-    browser: navigator.userAgent, settings: current.settings, logs: current.logs
-  });
-  const url = URL.createObjectURL(new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" }));
-  const link = document.createElement("a");
-  link.href = url; link.download = `modelany-diagnostics-${Date.now()}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-  notify("脱敏诊断日志已导出");
 });
 required("#run-diagnostics").addEventListener("click", async () => {
   const root = required("#diagnostic-results");

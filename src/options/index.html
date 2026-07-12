@@ -2,20 +2,56 @@
 <html lang="zh-CN">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ModelAny 设置</title><link rel="stylesheet" href="options.css"></head>
 <body>
-  <header class="options-header"><span class="brand-mark">M</span><div><h1>ModelAny 设置</h1><p>维护你的调度台与编队</p></div></header>
+  <header class="options-header">
+    <img class="brand-mark" src="icons/icon48.png" alt="">
+    <div><h1>ModelAny 设置</h1><p>设置您的插件选项与可用模型</p></div>
+  </header>
   <main class="options-grid">
-    <section class="panel"><h2>通用设置</h2>
-      <label class="switch-row"><span><strong>自动提交</strong><small>填充后点击发送按钮</small></span><input id="setting-auto" type="checkbox"></label>
-      <label class="switch-row"><span><strong>标签分组</strong><small>将本轮页面归入同一组</small></span><input id="setting-group" type="checkbox"></label>
-      <label class="switch-row"><span><strong>本地指标</strong><small>保留不含提问内容的诊断日志</small></span><input id="setting-metrics" type="checkbox"></label>
+    <section class="panel">
+      <h2>通用设置</h2>
+      <div class="switch-list">
+        <label class="switch-row"><span><strong>自动提交</strong><small>填充后点击发送按钮</small></span><input id="setting-auto" type="checkbox"></label>
+        <label class="switch-row"><span><strong>标签页分组</strong><small>将本轮标签页归为同一组</small></span><input id="setting-group" type="checkbox"></label>
+        <label class="switch-row"><span><strong>本地指标</strong><small>保留不含提问内容的诊断日志</small></span><input id="setting-metrics" type="checkbox"></label>
+      </div>
     </section>
-    <section class="panel"><h2>模型管理</h2><div id="model-settings" class="model-settings"></div></section>
-    <section class="panel"><h2>数据管理</h2><p>草稿、历史和日志只存储在浏览器本地。</p><div class="button-row"><button id="clear-history">清空历史</button><button id="export-logs">导出脱敏日志</button><button id="reset-all" class="danger">重置全部数据</button></div></section>
-    <section class="panel"><h2>诊断</h2><p>打开模型页面后填入“ModelAny”，再检查登录状态、输入框和发送按钮，不会提交内容。</p><button id="run-diagnostics">开始诊断</button><button id="close-diagnostics">关闭诊断标签页</button><ul id="diagnostic-results" aria-live="polite"></ul></section>
-    <section class="panel"><h2>关于</h2><p>ModelAny v1.0.1 · Manifest V3</p><p>不上传问题，不使用远程代码，不进行用户追踪。</p></section>
+    <section class="panel">
+      <h2>模型管理</h2>
+      <div id="model-settings" class="model-settings"></div>
+    </section>
+    <section class="panel wide">
+      <h2>数据管理</h2>
+      <p class="panel-hint">草稿、历史和日志只存储在浏览器本地。</p>
+      <div class="button-row">
+        <button id="clear-history">清空历史</button>
+        <button id="reset-all" class="danger">重置全部数据</button>
+      </div>
+    </section>
+    <section class="panel wide">
+      <h2>诊断</h2>
+      <p class="panel-hint">打开模型页面后填入“ModelAny”，仅检测页面能否正常打开、是否已登录、能否输入文本，不会提交内容。</p>
+      <div class="button-row">
+        <button id="run-diagnostics" class="primary">开始诊断</button>
+        <button id="close-diagnostics">关闭诊断标签页</button>
+      </div>
+      <ul id="diagnostic-results" class="diagnostic-results" aria-live="polite"></ul>
+    </section>
+    <section class="panel wide">
+      <h2>问题反馈</h2>
+      <p class="panel-hint">遇到无法填充、发送失败或页面改版？欢迎把复现步骤发我，我会尽快修复。</p>
+      <a class="feedback-link" href="mailto:kyreemeng@gmail.com?subject=ModelAny%20%E9%97%AE%E9%A2%98%E5%8F%8D%E9%A6%88">
+        <span class="feedback-icon" aria-hidden="true">✉</span>
+        <span class="feedback-text"><strong>发送邮件反馈</strong><small>kyreemeng@gmail.com</small></span>
+      </a>
+    </section>
+    <section class="panel wide about">
+      <h2>关于</h2>
+      <p>ModelAny v1.0.1 · Manifest V3</p>
+      <p class="panel-hint">不上传问题，不使用远程代码，不进行用户追踪。</p>
+    </section>
   </main>
   <div id="status" role="status" aria-live="polite"></div>
-  <dialog id="danger-dialog"><h2>确认危险操作</h2><p id="danger-message"></p><button id="danger-cancel">取消</button><button id="danger-confirm" class="danger">确认</button></dialog>
+  <dialog id="danger-dialog"><h2>确认危险操作</h2><p id="danger-message"></p><div class="button-row dialog-actions"><button id="danger-cancel">取消</button><button id="danger-confirm" class="danger">确认</button></div></dialog>
   <script type="module" src="options.js"></script>
 </body>
 </html>

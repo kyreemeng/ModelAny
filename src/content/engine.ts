@@ -150,43 +150,29 @@ const clickSubmitControl = (control: HTMLElement): void => {
   control.click();
 };
 
-const visibleSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
+const usableSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
   if (!(element instanceof HTMLElement) || !visible(element)) return false;
+  if (element instanceof HTMLButtonElement && element.disabled) return false;
+  if (element.getAttribute("aria-disabled") === "true") return false;
   if (element.matches("[data-testid*='stop'], [aria-label*='停止'], [aria-label*='Stop']")) return false;
   return adapter.id !== "deepseek" || !element.querySelector("svg rect");
 };
 
-const usableSubmitControl = (adapter: ModelAdapter, element: Element): element is HTMLElement => {
-  if (!visibleSubmitControl(adapter, element)) return false;
-  if (element instanceof HTMLButtonElement && element.disabled) return false;
-  return element.getAttribute("aria-disabled") !== "true";
-};
-
-const findSubmitControl = (
-  adapter: ModelAdapter,
-  root: Document,
-  predicate: (adapter: ModelAdapter, element: Element) => element is HTMLElement
-): HTMLElement | null => {
+export const findSubmitButton = (adapter: ModelAdapter, root: Document): HTMLElement | null => {
   for (const selector of adapter.submitSelectors) {
     for (const control of root.querySelectorAll(selector)) {
-      if (predicate(adapter, control)) return control;
+      if (usableSubmitControl(adapter, control)) return control;
     }
   }
   return null;
 };
 
-export const findSubmitButton = (adapter: ModelAdapter, root: Document): HTMLElement | null => {
-  return findSubmitControl(adapter, root, usableSubmitControl);
-};
-
 const waitForSubmitButton = async (
-  adapter: ModelAdapter,
-  dependencies: EngineDependencies,
-  predicate = usableSubmitControl
+  adapter: ModelAdapter, dependencies: EngineDependencies
 ): Promise<HTMLElement | null> => {
   const deadline = dependencies.now() + Math.min(dependencies.timeoutMs ?? 5_000, 5_000);
   while (dependencies.now() <= deadline) {
-    const button = findSubmitControl(adapter, dependencies.document, predicate);
+    const button = findSubmitButton(adapter, dependencies.document);
     if (button) return button;
     await dependencies.sleep(500);
   }
@@ -211,8 +197,7 @@ export const executeFillCommand = async (
   if (!input) return { status: "INPUT_NOT_FOUND" };
   if (command.type === "DIAGNOSE") {
     fillPrompt(adapter, input, "ModelAny");
-    const diagnosticButton = await waitForSubmitButton(adapter, dependencies, visibleSubmitControl);
-    return { status: diagnosticButton ? "FILLED" : "SUBMIT_NOT_FOUND" };
+    return { status: promptRemains(input, "ModelAny") ? "FILLED" : "INPUT_NOT_FOUND" };
   }
   if (!isValidFillMessage(command)) return { status: "UNEXPECTED_ERROR", detail: "INVALID_MESSAGE" };
   fillPrompt(adapter, input, command.prompt);

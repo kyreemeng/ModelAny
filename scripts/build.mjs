@@ -18,6 +18,7 @@ const scriptEntries = {
   "content-deepseek": "src/content/deepseek.ts",
   "content-kimi": "src/content/kimi.ts",
   "content-glm": "src/content/glm.ts",
+  "content-gemini": "src/content/gemini.ts",
   "content-wenxin": "src/content/wenxin.ts",
   "content-chatgpt": "src/content/chatgpt.ts"
 };
@@ -55,13 +56,9 @@ const resizeIcon = (size) => {
       const sourceY = Math.floor(y * masterIcon.height / size);
       const sourceIndex = (sourceY * masterIcon.width + sourceX) * 4;
       const targetIndex = (y * size + x) * 4;
-      const red = masterIcon.data[sourceIndex];
-      const green = masterIcon.data[sourceIndex + 1];
-      const blue = masterIcon.data[sourceIndex + 2];
-      const isBlueBackground = blue > red + 80 && blue > green + 60;
-      png.data[targetIndex] = isBlueBackground ? 25 : red;
-      png.data[targetIndex + 1] = isBlueBackground ? 131 : green;
-      png.data[targetIndex + 2] = isBlueBackground ? 255 : blue;
+      png.data[targetIndex] = masterIcon.data[sourceIndex];
+      png.data[targetIndex + 1] = masterIcon.data[sourceIndex + 1];
+      png.data[targetIndex + 2] = masterIcon.data[sourceIndex + 2];
       png.data[targetIndex + 3] = masterIcon.data[sourceIndex + 3];
     }
   }

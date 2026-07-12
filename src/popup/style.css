@@ -87,12 +87,6 @@ textarea:focus-visible { outline: none; }
 .send-button:active:not(:disabled) { transform: translateY(0); }
 .send-button:disabled { background: #c2cfdd; box-shadow: none; cursor: not-allowed; }
 
-/* 结果区 */
-.result-details { padding: 10px 12px; }
-.result-details ul { margin: 8px 0 0; padding: 0; display: grid; gap: 6px; list-style: none; }
-.result-details li { display: flex; align-items: center; justify-content: space-between; gap: 8px; color: var(--danger); font-size: 12px; }
-.result-details li button { min-height: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--warm); color: var(--iris-dark); font-size: 12px; }
-
 .shortcut, footer { margin: -4px 0 0; text-align: center; }
 
 /* 浮层 */

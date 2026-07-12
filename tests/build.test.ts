@@ -13,10 +13,10 @@ describe("production build", () => {
       "manifest.json", "popup.html", "options.html", "service-worker.js",
       "popup.css", "options.css",
       "content-doubao.js", "content-qwen.js", "content-deepseek.js", "content-kimi.js", "content-glm.js",
-      "content-wenxin.js", "content-chatgpt.js",
+      "content-wenxin.js", "content-chatgpt.js", "content-gemini.js",
       "icons/icon16.png", "icons/icon32.png", "icons/icon48.png", "icons/icon128.png",
       "icons/models/doubao.png", "icons/models/qwen.png", "icons/models/deepseek.ico",
-      "icons/models/kimi.ico", "icons/models/glm.ico", "icons/models/wenxin.ico", "icons/models/chatgpt.svg"
+      "icons/models/kimi.ico", "icons/models/glm.ico", "icons/models/wenxin.ico", "icons/models/chatgpt.svg", "icons/models/gemini.svg"
     ];
     await Promise.all(expected.map((path) => access(`dist/${path}`)));
     for (const size of [16, 32, 48, 128]) {
@@ -25,8 +25,17 @@ describe("production build", () => {
       expect(icon.alpha).toBe(true);
     }
     const icon128 = PNG.sync.read(await readFile("dist/icons/icon128.png"));
-    const backgroundPixel = Array.from(icon128.data.slice((12 * 128 + 12) * 4, (12 * 128 + 12) * 4 + 3));
-    expect(backgroundPixel).toEqual([25, 131, 255]);
+    const masterIcon = PNG.sync.read(await readFile("src/assets/modelany-icon-master.png"));
+    const sampleX = 12;
+    const sampleY = 12;
+    const sampleIndex = (sampleY * 128 + sampleX) * 4;
+    const masterSampleIndex = (
+      Math.floor(sampleY * masterIcon.height / 128) * masterIcon.width
+      + Math.floor(sampleX * masterIcon.width / 128)
+    ) * 4;
+    const outputSample = Array.from(icon128.data.slice(sampleIndex, sampleIndex + 4));
+    const masterSample = Array.from(masterIcon.data.slice(masterSampleIndex, masterSampleIndex + 4));
+    expect(outputSample).toEqual(masterSample);
     const readme = await readFile("README.md", "utf8");
     expect(readme).not.toContain("`scripting`");
     const manifest = JSON.parse(await readFile("dist/manifest.json", "utf8")) as {

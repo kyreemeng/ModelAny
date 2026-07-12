@@ -32,19 +32,19 @@ test("loads the MV3 extension and exercises the popup", async () => {
       .toBeGreaterThanOrEqual(20);
     await expect.poll(() => settingsButton.evaluate((element) => element.getBoundingClientRect().width))
       .toBeGreaterThanOrEqual(44);
-    await expect(page.locator(".model-card img")).toHaveCount(7);
+    await expect(page.locator(".model-card img")).toHaveCount(8);
     await expect.poll(() => page.locator(".model-card").first().evaluate((element) => element.getBoundingClientRect().height))
       .toBeLessThanOrEqual(38);
     await expect.poll(() => page.locator(".model-grid").evaluate((element) => getComputedStyle(element).gridTemplateColumns.split(" ").length))
       .toBe(4);
     await expect(page.getByRole("button", { name: "请输入问题" })).toBeDisabled();
     await page.getByRole("textbox", { name: "您想问什么？" }).fill("比较 TypeScript 与 JavaScript 的适用场景");
-    await expect(page.getByRole("button", { name: "发送到 7 个模型" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "发送到 8 个模型" })).toBeEnabled();
 
     await page.getByRole("button", { name: "清空" }).click();
     await expect(page.getByRole("button", { name: "请选择至少一个模型" })).toBeDisabled();
     await page.getByRole("button", { name: "全选" }).click();
-    await expect(page.getByRole("button", { name: "发送到 7 个模型" })).toBeEnabled();
+    await expect(page.getByRole("button", { name: "发送到 8 个模型" })).toBeEnabled();
 
     await page.goto(`chrome-extension://${extensionId}/options.html`);
     await expect(page.getByRole("heading", { name: "ModelAny 设置" })).toBeVisible();

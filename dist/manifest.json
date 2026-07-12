@@ -17,6 +17,7 @@
     "https://chat.deepseek.com/*",
     "https://www.kimi.com/*",
     "https://chatglm.cn/*",
+    "https://gemini.google.com/*",
     "https://wenxin.baidu.com/*",
     "https://chat.baidu.com/*",
     "https://yiyan.baidu.com/*",
@@ -69,6 +70,11 @@
     {
       "matches": ["https://chatglm.cn/*"],
       "js": ["content-glm.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://gemini.google.com/*"],
+      "js": ["content-gemini.js"],
       "run_at": "document_idle"
     },
     {

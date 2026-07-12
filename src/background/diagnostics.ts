@@ -11,7 +11,6 @@ const labels: Partial<Record<ModelResultCode, string>> = {
   FILLED: "正常",
   NOT_LOGGED_IN: "需要登录",
   INPUT_NOT_FOUND: "未找到输入框",
-  SUBMIT_NOT_FOUND: "未找到发送按钮",
   PAGE_TIMEOUT: "页面超时"
 };
 

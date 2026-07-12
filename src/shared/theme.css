@@ -29,7 +29,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible {
 .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
 .brand-mark {
   display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px;
-  background: linear-gradient(135deg, #1983ff 0%, #4a5ce8 100%);
+  object-fit: cover;
   color: white; font-weight: 800; font-size: 16px;
   box-shadow: 0 4px 12px rgba(25, 131, 255, .32);
 }
