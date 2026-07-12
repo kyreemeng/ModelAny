@@ -1,11 +1,10 @@
 {
   "manifest_version": 3,
   "name": "ModelAny",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "一次提问，同时发往多个 AI 模型。",
   "permissions": [
     "storage",
-    "tabs",
     "tabGroups",
     "contextMenus",
     "alarms"
@@ -22,7 +21,8 @@
     "https://yiyan.baidu.com/*",
     "https://chatgpt.com/*",
     "https://www.chatgpt.com/*",
-    "https://chat.openai.com/*"
+    "https://chat.openai.com/*",
+    "https://modelany.app/*"
   ],
   "action": {
     "default_title": "ModelAny",
@@ -85,6 +85,11 @@
       "matches": ["https://chatgpt.com/*", "https://www.chatgpt.com/*", "https://chat.openai.com/*"],
       "js": ["content-chatgpt.js"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://modelany.app/*"],
+      "js": ["content-modelany-bridge.js"],
+      "run_at": "document_start"
     }
   ],
   "content_security_policy": {

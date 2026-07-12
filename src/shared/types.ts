@@ -66,6 +66,7 @@ export interface AppState {
 
 export type ExtensionMessage =
   | { type: "START_SEND"; prompt: string; modelIds: ModelId[]; autoSubmit: boolean; groupTabs: boolean; recordLogs: boolean }
+  | { type: "WEB_LAUNCH"; nonce: string; request: { prompt: string; modelIds: ModelId[]; autoSubmit: boolean } }
   | { type: "FILL_PROMPT"; modelId: ModelId; prompt: string; autoSubmit: boolean }
   | { type: "DIAGNOSE"; modelId: ModelId }
   | { type: "TASK_PROGRESS"; task: SendTask }

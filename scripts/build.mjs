@@ -20,7 +20,8 @@ const scriptEntries = {
   "content-glm": "src/content/glm.ts",
   "content-gemini": "src/content/gemini.ts",
   "content-wenxin": "src/content/wenxin.ts",
-  "content-chatgpt": "src/content/chatgpt.ts"
+  "content-chatgpt": "src/content/chatgpt.ts",
+  "content-modelany-bridge": "src/web-bridge/content-script.ts"
 };
 await Promise.all(Object.entries(scriptEntries).map(([name, entry]) =>
   build({

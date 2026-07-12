@@ -13,21 +13,20 @@ describe("manifest", () => {
     expect(manifest.name).toBe("ModelAny");
     expect(manifest.permissions).toEqual([
       "storage",
-      "tabs",
       "tabGroups",
       "contextMenus",
       "alarms"
     ]);
   });
 
-  it("limits host access to the eight supported providers", async () => {
+  it("limits host access to supported providers and the verified website bridge", async () => {
     const manifest = JSON.parse(await readFile("manifest.json", "utf8")) as {
       host_permissions: string[];
       content_scripts: Array<{ matches: string[]; js: string[] }>;
     };
 
-    expect(manifest.host_permissions).toHaveLength(12);
-    expect(manifest.content_scripts).toHaveLength(8);
+    expect(manifest.host_permissions).toHaveLength(13);
+    expect(manifest.content_scripts).toHaveLength(9);
     expect(manifest.host_permissions).not.toContain("<all_urls>");
     expect(manifest.host_permissions).toContain("https://www.qianwen.com/*");
     expect(manifest.host_permissions).toContain("https://www.kimi.com/*");
@@ -44,5 +43,8 @@ describe("manifest", () => {
     expect(manifest.host_permissions).toContain("https://gemini.google.com/*");
     expect(manifest.content_scripts.find(({ js }) => js.includes("content-gemini.js"))?.matches)
       .toEqual(["https://gemini.google.com/*"]);
+    expect(manifest.host_permissions).toContain("https://modelany.app/*");
+    expect(manifest.content_scripts.find(({ js }) => js.includes("content-modelany-bridge.js"))?.matches)
+      .toEqual(["https://modelany.app/*"]);
   });
 });

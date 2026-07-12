@@ -5,6 +5,7 @@ import { MODEL_IDS } from "../shared/models";
 import { storage } from "../shared/storage";
 import type { ExtensionMessage, ModelId } from "../shared/types";
 import { limitCodePoints, normalizePrompt } from "../shared/validation";
+import { WEBSITE_ORIGIN } from "../web-bridge/protocol";
 
 export interface ContextDependencies {
   saveDraft(value: string): Promise<void>;
@@ -22,6 +23,14 @@ export const handleContextSelection = async (selection: string, dependencies: Co
   } catch {
     await dependencies.setBadge("!");
     await dependencies.setTitle("已保存选中文字，点击 ModelAny 继续");
+  }
+};
+
+export const isWebsiteSender = (sender: chrome.runtime.MessageSender): boolean => {
+  try {
+    return new URL(sender.origin ?? sender.url ?? "").origin === WEBSITE_ORIGIN;
+  } catch {
+    return false;
   }
 };
 
@@ -113,7 +122,7 @@ if (hasRuntime) {
       setTitle: (title) => chrome.action.setTitle({ title })
     });
   });
-  chrome.runtime.onMessage.addListener((message: ExtensionMessage, _sender, sendResponse) => {
+  chrome.runtime.onMessage.addListener((message: ExtensionMessage, sender, sendResponse) => {
     if (message.type === "START_SEND") {
       const prompt = normalizePrompt(message.prompt);
       const modelIds = message.modelIds.filter((id): id is ModelId => MODEL_IDS.includes(id));
@@ -130,6 +139,19 @@ if (hasRuntime) {
     }
     if (message.type === "CLOSE_DIAGNOSTIC_TABS") {
       void diagnostics.close().then(() => sendResponse({ ok: true }));
+      return true;
+    }
+    if (message.type === "WEB_LAUNCH") {
+      if (!isWebsiteSender(sender)) { sendResponse({ ok: false, error: "UNTRUSTED_ORIGIN" }); return false; }
+      const prompt = normalizePrompt(message.request.prompt);
+      const modelIds = message.request.modelIds.filter((id): id is ModelId => MODEL_IDS.includes(id));
+      if (!prompt || modelIds.length !== message.request.modelIds.length || modelIds.length === 0) {
+        sendResponse({ ok: false, error: "INVALID_REQUEST" });
+        return false;
+      }
+      void runner.start({
+        prompt, modelIds, autoSubmit: message.request.autoSubmit, groupTabs: true, recordLogs: false
+      }).then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false, error: "TASK_FAILED" }));
       return true;
     }
     return false;
