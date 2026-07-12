@@ -3,9 +3,9 @@
   <h1>ModelAny</h1>
   <p><strong>Send one prompt to every AI.</strong><br>一条提示词，发给所有 AI。</p>
   <p>
-    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
-    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
-    <a href="https://github.com/kyreemeng/modelany"><img src="https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
+    <a href="https://github.com/kyreemeng/ModelAny"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
+    <a href="https://github.com/kyreemeng/ModelAny"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
+    <a href="https://github.com/kyreemeng/ModelAny"><img src="https://img.shields.io/badge/TypeScript-Ready-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript"></a>
   </p>
 </div>
 
@@ -62,11 +62,18 @@
 
 ModelAny 当前通过 Chrome 的“加载已解压的扩展程序”使用。
 
+### 下载
+
+- [下载 ModelAny v1.0.1](https://github.com/kyreemeng/ModelAny/releases/tag/v1.0.1)
+- [访问 ModelAny 官网](https://modelany.app)
+
+Chrome 插件商店与 Microsoft Edge 插件商店版本正在上架中，敬请期待。
+
 ### 1. 获取项目
 
 ```bash
-git clone https://github.com/kyreemeng/modelany.git
-cd modelany
+git clone https://github.com/kyreemeng/ModelAny.git
+cd ModelAny
 ```
 
 ### 2. 安装依赖并构建
@@ -131,12 +138,14 @@ src/
 
 ## 反馈与贡献
 
-如果你发现问题或有改进建议，欢迎提交 GitHub Issue 或 Pull Request。
+如果你发现问题或有改进建议，欢迎提交 GitHub Issue。欢迎反馈使用体验和适配问题。
 
 反馈邮箱：**kyreemeng@gmail.com**
 
-欢迎贡献新的模型适配器、页面选择器和测试用例。
+请注意：本项目源码公开用于学习、评估和反馈，但不接受未经授权的二次开发、重新打包、应用商店上架或商业使用。具体权利和限制请参阅 [LICENSE](./LICENSE)。
 
 ## License
 
-本项目目前未指定开源许可证。若你希望在 GitHub 上公开授权使用，请补充合适的 `LICENSE` 文件。
+ModelAny 使用自定义专有许可证。源码公开可见，但保留全部权利；未经书面许可，不得复制、修改、分发、重新打包、上架应用商店、创建衍生插件或用于商业目的。
+
+详见 [LICENSE](./LICENSE)。

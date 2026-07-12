@@ -1,0 +1,29 @@
+ModelAny Source-Available License
+Copyright (c) 2026 Kyree Meng
+All rights reserved.
+
+1. Permission to view and evaluate the source code is granted.
+
+2. You may use an official, unmodified ModelAny release for personal,
+   non-commercial purposes, subject to the terms of this license.
+
+3. Without prior written permission from Kyree Meng, you may not:
+   - copy, modify, adapt, translate, or create derivative works from the
+     source code;
+   - redistribute, sublicense, publish, mirror, or repackage the source code
+     or any compiled version of the software;
+   - submit, list, or distribute ModelAny or a derivative work through the
+     Chrome Web Store, Microsoft Edge Add-ons, or any other extension store;
+   - use the source code, the software, or any derivative work for commercial
+     purposes;
+   - remove or alter copyright, attribution, or license notices.
+
+4. Contributions, pull requests, and issue reports do not grant any license
+   beyond the permissions expressly stated above.
+
+5. The software is provided "AS IS", without warranty of any kind, express or
+   implied. In no event shall the copyright holder be liable for any claim,
+   damages, or other liability arising from the use of the software.
+
+For permissions not expressly granted by this license, please contact:
+kyreemeng@gmail.com
