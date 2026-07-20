@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "ModelAny",
-  "version": "1.0.2",
-  "description": "一次提问，同时发往多个 AI 模型。",
+  "version": "1.0.3",
+  "description": "Ask every AI model, all at once. Type your question once and compare answers from ChatGPT, Gemini, DeepSeek, and more.",
   "permissions": [
     "storage",
     "tabGroups",
