@@ -15,6 +15,7 @@ describe("production build", () => {
       "content-doubao.js", "content-qwen.js", "content-deepseek.js", "content-kimi.js", "content-glm.js",
       "content-wenxin.js", "content-chatgpt.js", "content-gemini.js",
       "icons/icon16.png", "icons/icon32.png", "icons/icon48.png", "icons/icon128.png",
+      "icons/brand-mark.png",
       "icons/models/doubao.png", "icons/models/qwen.png", "icons/models/deepseek.ico",
       "icons/models/kimi.ico", "icons/models/glm.ico", "icons/models/wenxin.ico", "icons/models/chatgpt.svg", "icons/models/gemini.svg"
     ];

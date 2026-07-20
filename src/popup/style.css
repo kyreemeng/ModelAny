@@ -22,18 +22,20 @@ body { background: var(--fog); }
 
 /* 顶部品牌区 */
 .brand-bar { padding-top: 14px; }
-.brand-bar, .brand-bar > div, .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.brand-bar > div { justify-content: flex-start; }
+.brand-bar, .brand-link, .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.brand-link { justify-content: flex-start; color: inherit; text-decoration: none; min-width: 0; }
+.brand-link span { min-width: 0; }
+.console-shell .brand-mark { width: 40px; height: 40px; }
+.header-actions { display: flex; align-items: center; gap: 6px; }
 .brand-bar h1, .brand-bar p, h2 { margin: 0; }
 .brand-bar h1 { font-size: 17px; font-weight: 800; letter-spacing: -.02em; }
 .brand-bar p { color: var(--muted); font-size: 11px; margin-top: 1px; }
-footer, .shortcut { color: var(--muted); font-size: 11px; }
-
 .icon-button, .text-button { border: 0; background: transparent; color: var(--iris-dark); }
 .text-button { font-size: 12px; font-weight: 600; min-height: 28px; padding: 2px 8px; border-radius: 8px; transition: background-color 140ms; }
 .text-button:hover { background: var(--iris-soft); }
-.icon-button { display: grid; place-items: center; width: 44px; min-width: 44px; height: 44px; padding: 0; border-radius: 10px; font-size: 21px; color: var(--muted); transition: color 140ms, background-color 140ms; }
+.icon-button { display: grid; place-items: center; width: 40px; min-width: 40px; height: 40px; padding: 0; border-radius: 10px; font-size: 20px; color: var(--muted); transition: color 140ms, background-color 140ms; }
 .icon-button:hover { color: var(--iris-dark); background: var(--iris-soft); }
+.console-shell .lang-switch__btn { min-width: 30px; padding: 0 8px; }
 
 /* 输入区 */
 .composer { padding: 12px 14px 10px; transition: border-color 160ms, box-shadow 160ms; }
@@ -86,8 +88,6 @@ textarea:focus-visible { outline: none; }
 .send-button:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 8px 20px rgba(25, 131, 255, .4); }
 .send-button:active:not(:disabled) { transform: translateY(0); }
 .send-button:disabled { background: #c2cfdd; box-shadow: none; cursor: not-allowed; }
-
-.shortcut, footer { margin: -4px 0 0; text-align: center; }
 
 /* 浮层 */
 .toast { position: absolute; z-index: 3; top: 64px; left: 24px; right: 24px; padding: 10px 12px; border-radius: 10px; background: var(--ink); color: white; box-shadow: var(--shadow); font-size: 12px; }

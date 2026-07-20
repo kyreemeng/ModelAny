@@ -1,10 +1,11 @@
 {
   "name": "modelany",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "package": "npm run build && node scripts/package.mjs",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test e2e --reporter=line",

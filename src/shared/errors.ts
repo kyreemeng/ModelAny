@@ -1,4 +1,5 @@
 import type { ModelResultCode } from "./types";
+import type { Locale } from "./i18n";
 
 export const ERROR_MESSAGES: Record<ModelResultCode, string> = {
   PENDING: "等待处理",
@@ -11,3 +12,18 @@ export const ERROR_MESSAGES: Record<ModelResultCode, string> = {
   PAGE_TIMEOUT: "页面响应超时，请稍后重试",
   UNEXPECTED_ERROR: "发生未预期错误"
 };
+
+const ENGLISH_ERROR_MESSAGES: Record<ModelResultCode, string> = {
+  PENDING: "Waiting",
+  FILLED: "Filled in — send it manually",
+  SUBMITTED: "Submitted automatically",
+  NOT_LOGGED_IN: "Sign in on the page first",
+  INPUT_NOT_FOUND: "Input not found — the page may have changed",
+  SUBMIT_NOT_FOUND: "Filled in, but no send button was found",
+  TAB_CLOSED: "The target tab was closed",
+  PAGE_TIMEOUT: "The page timed out — try again shortly",
+  UNEXPECTED_ERROR: "An unexpected error occurred"
+};
+
+export const getErrorMessage = (code: ModelResultCode, locale: Locale): string =>
+  (locale === "zh-CN" ? ERROR_MESSAGES : ENGLISH_ERROR_MESSAGES)[code];

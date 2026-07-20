@@ -1,7 +1,7 @@
 <div align="center">
   <img src="src/assets/modelany-icon-master.png" alt="ModelAny" width="180">
   <h1>ModelAny</h1>
-  <p><strong>Send one prompt to every AI.</strong><br>一条提示词，发给所有 AI。</p>
+  <p><strong>Ask every AI model, all at once.</strong><br>一次提问，同时比较多个 AI 模型的回答。</p>
   <p>
     <a href="https://github.com/kyreemeng/ModelAny"><img src="https://img.shields.io/badge/Manifest-V3-4285F4?style=flat-square" alt="Manifest V3"></a>
     <a href="https://github.com/kyreemeng/ModelAny"><img src="https://img.shields.io/badge/Chrome-Extension-111827?style=flat-square&logo=googlechrome&logoColor=white" alt="Chrome Extension"></a>
@@ -10,15 +10,15 @@
 </div>
 
 > 不必在多个 AI 标签页之间来回复制。<br>
-> 输入一次，选择模型，一键同时打开 ChatGPT、Gemini、DeepSeek 等 AI 对话。
+> 输入一次问题，选择模型，同时打开 ChatGPT、Gemini、DeepSeek 等 AI 对话并比较回答。
 
 用同一个问题，快速获得不同模型的思路、答案与视角。<br>
-更快对比，更好决策。
+少一些复制粘贴，多一些比较与思考。
 
-**One prompt. Multiple models. Better answers.**<br>
-**一次提问，多模型回答，找到更好的答案。**
+**One question. Many AI models. Wider perspectives.**<br>
+**一个问题，多个 AI 模型，更广的视角。**
 
-适合写作、编程、研究、创意、学习，以及所有需要多角度 AI 回答的时刻。
+适合研究、写作、编程、学习、头脑风暴和日常决策。
 
 > **ModelAny — Ask once. Think wider.**<br>
 > **ModelAny —— 问一次，看得更广。**
@@ -27,23 +27,23 @@
 
 | | |
 |---|---|
-| ⚡ **一次输入** | 不再重复复制同一条问题 |
-| 🧠 **多模型视角** | 同时比较不同 AI 的思路与答案 |
-| 🎯 **一键调度** | 选择模型后，自动打开对应对话页面 |
-| 🚀 **自动发送** | 可选自动填充并发送，也可以手动确认 |
-| 🗂️ **标签分组** | 将本轮 AI 对话页面归为同一组 |
-| 🔒 **本地优先** | 草稿、设置、历史和任务状态保存在浏览器本地 |
+| ⚡ **一次提问，多模型回答** | 输入一次问题，同时询问你选择的模型 |
+| 🧠 **更快比较视角** | 并排查看不同模型的思路和答案 |
+| 🎯 **自动打开对话** | 为每个模型打开独立对话标签页并填入问题 |
+| 🚀 **可选自动发送** | 自动提交，或保留内容供你确认 |
+| 🗂️ **保持对话有序** | 将同一轮打开的标签页自动分组 |
+| 🔒 **本地优先隐私** | 草稿、设置和历史记录保存在浏览器本地 |
 
 ## 支持的 AI 模型
 
-- 智谱 GLM
+- GLM
 - Kimi
 - ChatGPT
 - Gemini
 - DeepSeek
-- 通义千问
-- 豆包
-- 文心
+- Qwen（通义千问）
+- Doubao（豆包）
+- Wenxin（文心）
 
 模型网站的页面结构可能变化。ModelAny 使用语义选择器识别输入框和发送控件，并提供诊断功能帮助定位页面适配问题。
 
@@ -53,21 +53,21 @@
 2. 点击浏览器工具栏中的 ModelAny 图标。
 3. 输入一条问题，最多支持 5000 个 Unicode 字符。
 4. 选择一个或多个模型。
-5. 按需开启“自动发送”，点击发送或按 `Cmd/Ctrl + Enter`。
+5. 按需开启“自动发送”，点击发送。
 6. ModelAny 会为选中的模型打开独立对话页面，并填入同一条问题。
 
 也可以在网页中选中文字，右键选择 **“使用 ModelAny 提问”**，直接将选中文本带入扩展。
 
 ## 安装
 
-ModelAny 当前通过 Chrome 的“加载已解压的扩展程序”使用。
+ModelAny 支持从 Chrome Web Store 安装，也可以在本地以开发者模式加载。
 
 ### 下载
 
-- [下载 ModelAny v1.0.1](https://github.com/kyreemeng/ModelAny/releases/tag/v1.0.1)
-- [访问 ModelAny 官网](https://modelany.app)
+- [访问 ModelAny 官网](https://www.modelany.app/)
+- [在 GitHub 上给 ModelAny 点个 Star](https://github.com/kyreemeng/ModelAny)
 
-Chrome 插件商店与 Microsoft Edge 插件商店版本正在上架中，敬请期待。
+Chrome Web Store 版本可从[官方网站](https://www.modelany.app/)安装；Microsoft Edge 版本正在审核中。
 
 ### 1. 获取项目
 
@@ -111,6 +111,7 @@ npm install
 npm run check       # TypeScript 类型检查
 npm test            # 单元测试
 npm run build       # 构建 dist
+npm run package     # 生成 Chrome 商店提交包
 npm run test:e2e    # Chromium 扩展端到端测试
 ```
 

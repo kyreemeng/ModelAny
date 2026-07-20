@@ -1,5 +1,6 @@
-import { ERROR_MESSAGES } from "../shared/errors";
-import { MODELS, MODEL_IDS } from "../shared/models";
+import { getErrorMessage } from "../shared/errors";
+import { applyStaticTranslations, bindLanguageSwitch, getLocale, t, type Locale } from "../shared/i18n";
+import { getModelDisplayName, MODELS, MODEL_IDS } from "../shared/models";
 import { storage } from "../shared/storage";
 import type { AppState, HistoryItem, ModelId, SendTask } from "../shared/types";
 import { countCodePoints, limitCodePoints, normalizePrompt } from "../shared/validation";
@@ -25,6 +26,7 @@ const historyList = required<HTMLOListElement>("#history-list");
 let appState: AppState;
 let state = createPopupState();
 let saveTimer: number | undefined;
+let locale: Locale = getLocale();
 
 const showToast = (message: string, alert = false) => {
   toast.textContent = message;
@@ -33,7 +35,7 @@ const showToast = (message: string, alert = false) => {
   window.setTimeout(() => { toast.hidden = true; }, 3000);
 };
 const renderButton = () => {
-  const derived = deriveSendLabel(state);
+  const derived = deriveSendLabel(state, locale);
   send.disabled = derived.disabled;
   send.textContent = derived.label;
 };
@@ -45,14 +47,15 @@ const renderModels = () => {
     button.className = "model-card";
     button.dataset.modelId = model.id;
     button.setAttribute("aria-pressed", String(state.selected.includes(model.id)));
-    button.setAttribute("aria-label", `${model.name}，${state.selected.includes(model.id) ? "已选择" : "未选择"}`);
+    const displayName = getModelDisplayName(model, locale);
+    button.setAttribute("aria-label", `${displayName}: ${state.selected.includes(model.id) ? (locale === "zh-CN" ? "已选择" : "Selected") : (locale === "zh-CN" ? "未选择" : "Not selected")}`);
     const mark = document.createElement("img");
     mark.className = `model-mark model-mark--${model.id}`;
     mark.src = chrome.runtime.getURL(model.iconPath);
     mark.alt = "";
     mark.setAttribute("aria-hidden", "true");
     const label = document.createElement("strong");
-    label.textContent = model.name;
+    label.textContent = displayName;
     button.append(mark, label);
     button.addEventListener("click", () => {
       state.selected = state.selected.includes(model.id) ? state.selected.filter((id) => id !== model.id) : [...state.selected, model.id];
@@ -82,7 +85,7 @@ const renderHistory = () => {
     text.textContent = limitCodePoints(item.text, 160);
     const time = document.createElement("time");
     time.dateTime = new Date(item.createdAt).toISOString();
-    time.textContent = formatHistoryTime(item.createdAt);
+    time.textContent = formatHistoryTime(item.createdAt, locale);
     restore.append(text, time);
     restore.addEventListener("click", () => {
       const restored = restoreHistoryItem(item);
@@ -98,8 +101,8 @@ const renderHistory = () => {
     const remove = document.createElement("button");
     remove.type = "button";
     remove.className = "danger";
-    remove.textContent = "删除";
-    remove.setAttribute("aria-label", `删除 ${time.textContent} 的历史记录`);
+    remove.textContent = t("delete", {}, locale);
+    remove.setAttribute("aria-label", t("deleteHistoryLabel", { time: time.textContent }, locale));
     remove.addEventListener("click", async () => {
       await storage.deleteHistory(item.id);
       appState.history = appState.history.filter(({ id }) => id !== item.id);
@@ -112,7 +115,7 @@ const renderHistory = () => {
 };
 const updatePrompt = () => {
   const limited = limitCodePoints(prompt.value);
-  if (limited !== prompt.value) { prompt.value = limited; showToast("已截断至 5000 个字符", true); }
+  if (limited !== prompt.value) { prompt.value = limited; showToast(t("truncated", {}, locale), true); }
   state.draftText = prompt.value;
   count.textContent = `${countCodePoints(prompt.value)} / 5000`;
   renderButton();
@@ -145,7 +148,7 @@ const performSend = async () => {
     }
   } catch (error) {
     state.sending = false;
-    showToast(error instanceof Error ? error.message : "发送任务创建失败", true);
+    showToast(error instanceof Error ? error.message : t("sendFailed", {}, locale), true);
     renderButton();
   }
 };
@@ -155,6 +158,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     setTitle: (title) => chrome.action.setTitle({ title })
   }).catch(() => undefined);
   appState = await storage.getAppState();
+  locale = getLocale(appState.settings.locale);
+  applyStaticTranslations(locale);
+  bindLanguageSwitch(document, locale, async (next) => {
+    await storage.saveSettings({ locale: next });
+    location.reload();
+  });
   prompt.value = appState.draftText;
   autoSubmit.checked = appState.settings.autoSubmit;
   state = createPopupState({ draftText: prompt.value, selected: MODEL_IDS.filter((id) => appState.modelEnabled[id]) });
@@ -193,7 +202,16 @@ chrome.runtime.onMessage.addListener((message: { type?: string; task?: SendTask 
     const statuses = task.modelIds.map((id) => task.results[id]?.status ?? "UNEXPECTED_ERROR");
     const summary = summarizeTask(statuses);
     const failures = task.modelIds.filter((id) => !["SUBMITTED", "FILLED"].includes(task.results[id]?.status ?? ""));
-    showToast(summary === "success" ? "批量发送完成🎉，请查看各模型结果" : failures.map((id) => `${MODELS.find((m) => m.id === id)?.name}：${ERROR_MESSAGES[task.results[id]?.status ?? "UNEXPECTED_ERROR"]}`).join("；"), summary !== "success");
+    showToast(
+      summary === "success"
+        ? t("sendComplete", {}, locale)
+        : failures.map((id) => {
+            const model = MODELS.find((m) => m.id === id);
+            const name = model ? getModelDisplayName(model, locale) : id;
+            return `${name}: ${getErrorMessage(task.results[id]?.status ?? "UNEXPECTED_ERROR", locale)}`;
+          }).join(locale === "zh-CN" ? "；" : "; "),
+      summary !== "success"
+    );
   }
 });
 window.addEventListener("pagehide", () => { window.clearTimeout(saveTimer); void storage.saveDraft(prompt.value); });

@@ -1,5 +1,6 @@
 import { MODEL_IDS } from "../shared/models";
 import type { HistoryItem, ModelId, ModelResultCode, ModelSelection, SendTask } from "../shared/types";
+import { t, type Locale } from "../shared/i18n";
 
 export interface PopupState {
   draftText: string;
@@ -34,11 +35,11 @@ export const restoreHistoryItem = (item: HistoryItem): {
   draftText: string; selected: ModelId[]; autoSubmit: boolean;
 } => ({ draftText: item.text, selected: [...item.modelIds], autoSubmit: item.autoSubmit });
 
-export const deriveSendLabel = (state: PopupState): { disabled: boolean; label: string } => {
-  if (state.sending) return { disabled: true, label: `已完成 ${state.completed}/${state.total}` };
-  if (!state.draftText.trim()) return { disabled: true, label: "请输入问题" };
-  if (state.selected.length === 0) return { disabled: true, label: "请选择至少一个模型" };
-  return { disabled: false, label: `发送到 ${state.selected.length} 个模型` };
+export const deriveSendLabel = (state: PopupState, locale: Locale = "zh-CN"): { disabled: boolean; label: string } => {
+  if (state.sending) return { disabled: true, label: t("completed", { completed: state.completed, total: state.total }, locale) };
+  if (!state.draftText.trim()) return { disabled: true, label: t("sendEmpty", {}, locale) };
+  if (state.selected.length === 0) return { disabled: true, label: t("selectModel", {}, locale) };
+  return { disabled: false, label: t("sendToModels", { count: state.selected.length }, locale) };
 };
 
 export const formatHistoryTime = (timestamp: number, locale = navigator.language): string =>

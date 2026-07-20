@@ -1,3 +1,4 @@
+import type { Locale } from "./i18n";
 import type { ModelId } from "./types";
 
 export interface ModelAdapter {
@@ -15,6 +16,16 @@ export interface ModelAdapter {
   loginSelectors: readonly string[];
   readyDelayMs: number;
 }
+
+const ENGLISH_MODEL_NAMES: Partial<Record<ModelId, string>> = {
+  qwen: "Qwen",
+  doubao: "Doubao",
+  wenxin: "Wenxin",
+  glm: "Zhipu GLM"
+};
+
+export const getModelDisplayName = (model: Pick<ModelAdapter, "id" | "name">, locale: Locale = "zh-CN"): string =>
+  locale === "en" ? (ENGLISH_MODEL_NAMES[model.id] ?? model.name) : model.name;
 
 export const MODEL_IDS: readonly ModelId[] = ["glm", "kimi", "chatgpt", "gemini", "deepseek", "qwen", "doubao", "wenxin"];
 

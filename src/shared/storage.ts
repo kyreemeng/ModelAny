@@ -11,7 +11,7 @@ const defaultSelection = Object.fromEntries(MODEL_IDS.map((id) => [id, true])) a
 export const DEFAULT_STATE: AppState = {
   draftText: "",
   modelEnabled: defaultSelection,
-  settings: { autoSubmit: true, groupTabs: false, confirmManyTabs: true, localMetrics: true },
+  settings: { autoSubmit: true, groupTabs: false, confirmManyTabs: true, localMetrics: true, locale: "auto" },
   history: [],
   logs: [],
   tasks: []

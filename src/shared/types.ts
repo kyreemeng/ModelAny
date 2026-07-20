@@ -1,3 +1,5 @@
+import type { LocalePreference } from "./i18n";
+
 export type ModelId = "doubao" | "qwen" | "deepseek" | "kimi" | "glm" | "wenxin" | "chatgpt" | "gemini";
 
 export interface Settings {
@@ -5,6 +7,7 @@ export interface Settings {
   groupTabs: boolean;
   confirmManyTabs: boolean;
   localMetrics: boolean;
+  locale: LocalePreference;
 }
 
 export type ModelSelection = Record<ModelId, boolean>;
@@ -70,5 +73,5 @@ export type ExtensionMessage =
   | { type: "FILL_PROMPT"; modelId: ModelId; prompt: string; autoSubmit: boolean }
   | { type: "DIAGNOSE"; modelId: ModelId }
   | { type: "TASK_PROGRESS"; task: SendTask }
-  | { type: "START_DIAGNOSTICS"; modelIds: ModelId[] }
+  | { type: "START_DIAGNOSTICS"; modelIds: ModelId[]; locale?: "zh-CN" | "en" }
   | { type: "CLOSE_DIAGNOSTIC_TABS" };

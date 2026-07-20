@@ -134,7 +134,7 @@ if (hasRuntime) {
       return true;
     }
     if (message.type === "START_DIAGNOSTICS") {
-      void diagnostics.run(message.modelIds.filter((id) => MODEL_IDS.includes(id))).then(sendResponse);
+      void diagnostics.run(message.modelIds.filter((id) => MODEL_IDS.includes(id)), message.locale ?? "zh-CN").then(sendResponse);
       return true;
     }
     if (message.type === "CLOSE_DIAGNOSTIC_TABS") {
@@ -149,7 +149,7 @@ if (hasRuntime) {
         sendResponse({ ok: false, error: "INVALID_REQUEST" });
         return false;
       }
-      void runner.start({
+      void runner.enqueue({
         prompt, modelIds, autoSubmit: message.request.autoSubmit, groupTabs: true, recordLogs: false
       }).then(() => sendResponse({ ok: true })).catch(() => sendResponse({ ok: false, error: "TASK_FAILED" }));
       return true;

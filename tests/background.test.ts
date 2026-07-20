@@ -11,6 +11,37 @@ const repository = () => ({
 });
 
 describe("recoverable task runner", () => {
+  it("acknowledges an enqueued website task before model delivery completes", async () => {
+    const repo = repository();
+    let finishDelivery!: () => void;
+    const delivery = new Promise<{ status: "SUBMITTED" }>((resolve) => {
+      finishDelivery = () => resolve({ status: "SUBMITTED" });
+    });
+    const runner = createTaskRunner({
+      repository: repo,
+      createTab: async () => 1,
+      sendToTab: async () => delivery,
+      groupTabs: vi.fn(),
+      setGroupTitle: vi.fn(),
+      broadcast: vi.fn(async () => undefined),
+      now: () => 100,
+      randomId: () => "website-task",
+      timeoutMs: 15_000
+    });
+
+    const acknowledgment = await runner.enqueue({
+      prompt: "从官网发送",
+      modelIds: ["chatgpt"],
+      autoSubmit: false,
+      groupTabs: true,
+      recordLogs: false
+    });
+
+    expect(acknowledgment).toEqual({ taskId: "website-task" });
+    expect(repo.saveTask).toHaveBeenCalled();
+    finishDelivery();
+  });
+
   it("creates tabs in model order, persists progress, and groups successful tabs", async () => {
     const repo = repository();
     const created: string[] = [];

@@ -2,6 +2,13 @@ import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
 
 describe("manifest", () => {
+  it("keeps package and extension versions aligned for release builds", async () => {
+    const manifest = JSON.parse(await readFile("manifest.json", "utf8")) as { version: string };
+    const packageJson = JSON.parse(await readFile("package.json", "utf8")) as { version: string };
+
+    expect(packageJson.version).toBe(manifest.version);
+  });
+
   it("uses Manifest V3 with only required permissions", async () => {
     const manifest = JSON.parse(await readFile("manifest.json", "utf8")) as {
       manifest_version: number;

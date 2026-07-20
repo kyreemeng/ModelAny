@@ -44,7 +44,8 @@ await Promise.all([
   cp(path("manifest.json"), path("dist/manifest.json")),
   cp(path("src/popup/index.html"), path("dist/popup.html")),
   cp(path("src/options/index.html"), path("dist/options.html")),
-  cp(path("src/assets/models"), path("dist/icons/models"), { recursive: true })
+  cp(path("src/assets/models"), path("dist/icons/models"), { recursive: true }),
+  cp(path("src/assets/brand-mark.png"), path("dist/icons/brand-mark.png"))
 ]);
 
 const masterIcon = PNG.sync.read(await readFile(path("src/assets/modelany-icon-master.png")));

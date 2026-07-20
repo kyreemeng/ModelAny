@@ -120,14 +120,23 @@ export const createTaskRunner = (dependencies: RunnerDependencies) => {
     return operation;
   };
 
-  const start = async (input: Pick<SendTask, "prompt" | "modelIds" | "autoSubmit" | "groupTabs" | "recordLogs">) => {
+  const createTask = (input: Pick<SendTask, "prompt" | "modelIds" | "autoSubmit" | "groupTabs" | "recordLogs">): SendTask => {
     const startedAt = dependencies.now();
-    const task: SendTask = {
+    return {
       ...input, id: dependencies.randomId(), promptSummary: groupTitle(input.prompt),
       startedAt, deadline: startedAt + dependencies.timeoutMs, status: "pending", results: {}
     };
+  };
+  const start = async (input: Pick<SendTask, "prompt" | "modelIds" | "autoSubmit" | "groupTabs" | "recordLogs">) => {
+    const task = createTask(input);
     await persist(task);
     return execute(task);
+  };
+  const enqueue = async (input: Pick<SendTask, "prompt" | "modelIds" | "autoSubmit" | "groupTabs" | "recordLogs">) => {
+    const task = createTask(input);
+    await persist(task);
+    void execute(task);
+    return { taskId: task.id };
   };
 
   const resume = (): Promise<SendTask[]> => {
@@ -138,5 +147,5 @@ export const createTaskRunner = (dependencies: RunnerDependencies) => {
     resumePromise = operation;
     return operation;
   };
-  return { start, resume };
+  return { start, enqueue, resume };
 };

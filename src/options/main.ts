@@ -1,6 +1,7 @@
-import { MODELS } from "../shared/models";
+import { getModelDisplayName, MODELS } from "../shared/models";
 import { storage } from "../shared/storage";
-import type { AppState, Settings } from "../shared/types";
+import type { AppState } from "../shared/types";
+import { applyStaticTranslations, bindLanguageSwitch, getLocale, t, type Locale } from "../shared/i18n";
 
 const required = <T extends Element>(selector: string): T => {
   const element = document.querySelector<T>(selector);
@@ -11,7 +12,9 @@ const status = required<HTMLElement>("#status");
 const dialog = required<HTMLDialogElement>("#danger-dialog");
 let state: AppState;
 let dangerAction: (() => Promise<void>) | undefined;
-const settingControls: Partial<Record<keyof Settings, HTMLInputElement>> = {
+let locale: Locale = getLocale();
+type ToggleSetting = "autoSubmit" | "groupTabs" | "localMetrics";
+const settingControls: Record<ToggleSetting, HTMLInputElement> = {
   autoSubmit: required("#setting-auto"),
   groupTabs: required("#setting-group"),
   localMetrics: required("#setting-metrics")
@@ -28,7 +31,7 @@ const renderModels = () => {
     label.className = "switch-row";
     const text = document.createElement("span");
     const strong = document.createElement("strong");
-    strong.textContent = model.name;
+    strong.textContent = getModelDisplayName(model, locale);
     const small = document.createElement("small");
     small.textContent = model.hostname;
     text.append(strong, small);
@@ -37,7 +40,7 @@ const renderModels = () => {
     input.checked = state.modelEnabled[model.id];
     input.addEventListener("change", () => {
       state.modelEnabled[model.id] = input.checked;
-      void storage.saveModelSelection(state.modelEnabled).then(() => notify("模型编队已保存"));
+      void storage.saveModelSelection(state.modelEnabled).then(() => notify(t("formationSaved", {}, locale)));
     });
     label.append(text, input);
     root.append(label);
@@ -50,20 +53,30 @@ const confirmDanger = (message: string, action: () => Promise<void>) => {
 };
 document.addEventListener("DOMContentLoaded", async () => {
   state = await storage.getAppState();
-  for (const [key, input] of Object.entries(settingControls) as [keyof Settings, HTMLInputElement][]) {
+  locale = getLocale(state.settings.locale);
+  applyStaticTranslations(locale);
+  document.title = t("settingsTitle", {}, locale);
+  const version = chrome.runtime.getManifest().version;
+  const aboutVersion = required<HTMLElement>("#about-version");
+  aboutVersion.textContent = `ModelAny v${version} · Manifest V3`;
+  bindLanguageSwitch(document, locale, async (next) => {
+    await storage.saveSettings({ locale: next });
+    location.reload();
+  });
+  for (const [key, input] of Object.entries(settingControls) as [ToggleSetting, HTMLInputElement][]) {
     input.checked = state.settings[key];
     input.addEventListener("change", () => {
       state.settings[key] = input.checked;
-      void storage.saveSettings({ [key]: input.checked }).then(() => notify("设置已保存"));
+      void storage.saveSettings({ [key]: input.checked }).then(() => notify(t("settingsSaved", {}, locale)));
     });
   }
   renderModels();
 });
-required("#clear-history").addEventListener("click", () => confirmDanger("清空全部历史记录？此操作无法撤销。", async () => {
-  await storage.clearHistory(); notify("历史记录已清空");
+required("#clear-history").addEventListener("click", () => confirmDanger(t("clearHistoryConfirm", {}, locale), async () => {
+  await storage.clearHistory(); notify(t("clearHistoryDone", {}, locale));
 }));
-required("#reset-all").addEventListener("click", () => confirmDanger("重置草稿、模型、设置、历史、日志和任务？", async () => {
-  await storage.resetAllData(); notify("全部本地数据已重置"); window.setTimeout(() => location.reload(), 500);
+required("#reset-all").addEventListener("click", () => confirmDanger(t("resetAllConfirm", {}, locale), async () => {
+  await storage.resetAllData(); notify(t("resetAllDone", {}, locale)); window.setTimeout(() => location.reload(), 500);
 }));
 required("#danger-cancel").addEventListener("click", () => { dangerAction = undefined; dialog.close(); });
 required("#danger-confirm").addEventListener("click", async () => {
@@ -74,16 +87,16 @@ required("#run-diagnostics").addEventListener("click", async () => {
   root.replaceChildren();
   for (const model of MODELS) {
     const item = document.createElement("li");
-    item.textContent = `${model.name}：检测中`;
+    item.textContent = `${getModelDisplayName(model, locale)}: ${t("checking", {}, locale)}`;
     root.append(item);
   }
-  const results = await chrome.runtime.sendMessage({ type: "START_DIAGNOSTICS", modelIds: MODELS.map(({ id }) => id) }) as Record<string, string>;
+  const results = await chrome.runtime.sendMessage({ type: "START_DIAGNOSTICS", modelIds: MODELS.map(({ id }) => id), locale }) as Record<string, string>;
   Array.from(root.children).forEach((item, index) => {
     const model = MODELS[index];
-    if (model) item.textContent = `${model.name}：${results[model.id] ?? "异常"}`;
+    if (model) item.textContent = `${getModelDisplayName(model, locale)}: ${results[model.id] ?? t("diagnosticError", {}, locale)}`;
   });
 });
 required("#close-diagnostics").addEventListener("click", async () => {
   await chrome.runtime.sendMessage({ type: "CLOSE_DIAGNOSTIC_TABS" });
-  notify("诊断标签页已关闭");
+  notify(t("diagnosticTabsClosed", {}, locale));
 });

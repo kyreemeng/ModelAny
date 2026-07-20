@@ -13,9 +13,25 @@ body {
   margin: 0 auto 28px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 16px;
 }
-.options-header .brand-mark { width: 44px; height: 44px; border-radius: 14px; font-size: 20px; }
+.options-header .brand-link {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+.options-lang-switch { flex: none; }
+.options-lang-switch .lang-switch__btn {
+  min-height: 32px;
+  min-width: 48px;
+  padding: 0 14px;
+  font-size: 12px;
+}
+.options-header .brand-mark { width: 48px; height: 48px; }
 .options-header h1 { margin: 0; font-size: 24px; letter-spacing: -.02em; }
 .options-header p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 
@@ -127,6 +143,14 @@ button.danger:hover { border-color: var(--danger); background: rgba(212, 50, 78,
 
 .about p { margin: 0 0 6px; font-size: 14px; }
 .about p:last-child { margin-bottom: 0; }
+.official-website-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--iris-dark);
+  font-size: 14px;
+  font-weight: 700;
+}
+.github-star-link { margin-left: 18px; }
 
 .dialog-actions { justify-content: flex-end; margin-top: 18px; }
 

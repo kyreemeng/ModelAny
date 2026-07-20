@@ -9,32 +9,36 @@
 <body>
   <main class="console-shell">
     <header class="brand-bar">
-      <div><img class="brand-mark" src="icons/icon48.png" alt=""><div><h1>ModelAny</h1><p>一次提问，多模型回答，找到更好的答案</p></div></div>
-      <button id="open-options" class="icon-button" type="button" aria-label="打开设置">⚙</button>
+      <a class="brand-link" data-website-link target="_blank" rel="noopener noreferrer"><img class="brand-mark" src="icons/brand-mark.png" alt=""><span><h1>ModelAny</h1><p data-i18n="tagline">一次提问，多模型回答，找到更好的答案</p></span></a>
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="界面语言">
+          <button type="button" class="lang-switch__btn" data-locale="zh-CN" aria-pressed="true">中</button>
+          <button type="button" class="lang-switch__btn" data-locale="en" aria-pressed="false">EN</button>
+        </div>
+        <button id="open-options" class="icon-button" type="button" data-i18n-aria-label="openSettings" aria-label="打开设置">⚙</button>
+      </div>
     </header>
     <div id="toast" class="toast" aria-live="polite" hidden></div>
     <section class="panel composer" aria-labelledby="prompt-label">
-      <label id="prompt-label" for="prompt">您想问什么？</label>
-      <textarea id="prompt" rows="3" maxlength="10000" placeholder="输入要同时发送的问题…"></textarea>
-      <div class="counter"><span>纯文本 · 本地保存</span><output id="count" for="prompt">0 / 5000</output></div>
+      <label id="prompt-label" for="prompt" data-i18n="promptLabel">您想问什么？</label>
+      <textarea id="prompt" rows="3" maxlength="10000" data-i18n-placeholder="promptPlaceholder" placeholder="输入要同时发送的问题…"></textarea>
+      <div class="counter"><span data-i18n="localOnly">纯文本 · 本地保存</span><output id="count" for="prompt">0 / 5000</output></div>
     </section>
     <section class="formation" aria-labelledby="formation-title">
-      <div class="section-heading"><div><h2 id="formation-title">模型列表</h2></div>
-        <div><button id="select-all" type="button" class="text-button">全选</button><button id="clear-all" type="button" class="text-button">清空</button></div>
+      <div class="section-heading"><div><h2 id="formation-title" data-i18n="models">模型列表</h2></div>
+        <div><button id="select-all" type="button" class="text-button" data-i18n="selectAll">全选</button><button id="clear-all" type="button" class="text-button" data-i18n="clearAll">清空</button></div>
       </div>
       <div id="models" class="model-grid"></div>
     </section>
     <section class="controls panel">
-      <label class="switch-row" for="auto-submit"><span><strong>自动发送</strong><small>文本自动发送到指定模型对话框</small></span><input id="auto-submit" type="checkbox" role="switch"></label>
-      <button id="history-toggle" type="button" class="history-button" aria-controls="history" aria-expanded="false">最近记录 <span id="history-count">0</span></button>
+      <label class="switch-row" for="auto-submit"><span><strong data-i18n="autoSubmit">自动发送</strong><small data-i18n="autoSubmitHint">文本自动发送到指定模型对话框</small></span><input id="auto-submit" type="checkbox" role="switch"></label>
+      <button id="history-toggle" type="button" class="history-button" aria-controls="history" aria-expanded="false"><span data-i18n="recentHistory">最近记录</span> <span id="history-count">0</span></button>
     </section>
     <button id="send" class="send-button" type="button" disabled>请输入问题</button>
-    <p class="shortcut">⌘ / Ctrl + Enter 发送</p>
-    <footer>v1.0.1 · 内容仅保存在本机</footer>
     <aside id="history" class="history-drawer" aria-labelledby="history-title" hidden>
-      <div class="section-heading"><h2 id="history-title">最近 20 条</h2><button id="clear-history" type="button" class="text-button danger">全部清空</button></div>
+      <div class="section-heading"><h2 id="history-title" data-i18n="history">最近 20 条</h2><button id="clear-history" type="button" class="text-button danger" data-i18n="clearHistory">全部清空</button></div>
       <ol id="history-list"></ol>
-      <button id="history-close" type="button" class="secondary-button">返回编队</button>
+      <button id="history-close" type="button" class="secondary-button" data-i18n="returnToModels">返回编队</button>
     </aside>
   </main>
   <script type="module" src="popup.js"></script>
